@@ -31,7 +31,7 @@ print(offdays_date)
 calen = []
 
 for i in range(monthrange):
-    calen.append([i+1, int(firstdayofweek)])
+    calen.append([i+1, firstdayofweek])
     if firstdayofweek < 6:
         firstdayofweek += 1
     else : firstdayofweek = 0 
@@ -41,13 +41,13 @@ for i in range(monthrange):
 schedule = {}
 
 for i in range(monthrange):
-    if  calen[i] <= 3:
+    if  calen[i][2] <= 3:
         schedule[calen[i]] =["평야"]
-    elif calen[i] == 4:
+    elif calen[i][2] == 4:
         schedule[calen[i]] = ["금야"]
-    elif calen[i] == 5:
+    elif calen[i][2] == 5:
         schedule[calen[i]] = ["토주","토야"]
-    elif calen[i] == 6:
+    elif calen[i][2] == 6:
         schedule[calen[i]] = ["일주","일야"]
     
     
