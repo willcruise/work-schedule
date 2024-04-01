@@ -19,4 +19,8 @@ for i in range(monthrange):
         firstdayofweek += 1
     else : firstdayofweek = 0
    
-print(calen)
+schedule = {}
+
+for i in range(monthrange):
+    if calen[i] <= 3
+    schedule[calen[i]] =[] 
