@@ -21,6 +21,7 @@ offdays = offdays.replace(" ","").replace("0","").split(",")
 offdays_date = []
 for i in offdays:
     date = datetime.date(int(datelist[0]), int(datelist[1]), int(i))
+    print(date)
     offdays_date.append(date)
 """get offdays"""
 print(offdays_date)
@@ -30,7 +31,7 @@ print(offdays_date)
 calen = []
 
 for i in range(monthrange):
-    calen.append([i+1, firstdayofweek])
+    calen.append([i+1, int(firstdayofweek)])
     if firstdayofweek < 6:
         firstdayofweek += 1
     else : firstdayofweek = 0 
@@ -40,7 +41,7 @@ for i in range(monthrange):
 schedule = {}
 
 for i in range(monthrange):
-    if calen[i] <= 3:
+    if  calen[i] <= 3:
         schedule[calen[i]] =["평야"]
     elif calen[i] == 4:
         schedule[calen[i]] = ["금야"]
