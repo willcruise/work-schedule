@@ -59,6 +59,14 @@ print(calen)
 
     
     
+"""get vacations, outdoordays for workers"""
+
+"""allot duties for workers"""
+
+"""regression process"""
+    
+    
+"""final schedule"""
     
     
     
