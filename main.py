@@ -18,13 +18,12 @@ monthrange = calendar.monthrange(int(datelist[0]), int(datelist[1]))[1]
 print("Enter the offdays: 00, 00, ...")
 offdays = input()
 offdays = offdays.replace(" ","").replace("0","").split(",")
-offdays_date = []
+"""offdays_date = []
 for i in offdays:
     date = datetime.date(int(datelist[0]), int(datelist[1]), int(i))
     print(date)
-    offdays_date.append(date)
+    offdays_date.append(date)"""
 """get offdays"""
-print(offdays_date)
 
 
 
@@ -34,7 +33,21 @@ for i in range(monthrange):
     calen.append([i+1, firstdayofweek])
     if firstdayofweek < 6:
         firstdayofweek += 1
-    else : firstdayofweek = 0 
+    else : firstdayofweek = 0
+
+first = true 
+for i in calen:    
+    match = false
+    for c in offdays
+        if i[0] == c:
+            match = true
+            if first == true: 
+                i[1] = 5
+                first = false
+            else : i[1] = 6 
+    if match == true : first = false
+    else : first = true, match = false
+        
 """get the calender for the month of the schedule"""
    
    
@@ -49,8 +62,8 @@ for i in range(monthrange):
         schedule[calen[i]] = ["토주","토야"]
     elif calen[i][2] == 6:
         schedule[calen[i]] = ["일주","일야"]
-    
-    
+
+
     
     
     
