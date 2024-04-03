@@ -20,6 +20,8 @@ offdays = offdays.replace(" ","").split(",")
 
 for i in range(len(offdays)): 
     offdays[i] = int(offdays[i])
+"""get offdays for the month"""
+
 
 calen = []
 
