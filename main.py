@@ -6,11 +6,10 @@ yearmonth = input()
 """get year and month of the making schedule"""
 
 
-datelist = yearmonth.split("-")
+datelist = yearmonth.replace(" ", "").split("-")
 datelist[1] = datelist[1].replace("0","")
 
 datetime_date = datetime.date(int(datelist[0]), int(datelist[1]), 1)
-print(datetime_date)
 firstdayofweek = datetime_date.weekday()
 monthrange = calendar.monthrange(int(datelist[0]), int(datelist[1]))[1]
 """get monthrange and day of week of the first day of month""" 
@@ -18,6 +17,10 @@ monthrange = calendar.monthrange(int(datelist[0]), int(datelist[1]))[1]
 print("Enter the offdays: 00, 00, ...")
 offdays = input()
 offdays = offdays.replace(" ","").replace("0","").split(",")
+
+for i in range(len(offdays)): 
+    offdays[i] = int(offdays[i])
+    
 """offdays_date = []
 for i in offdays:
     date = datetime.date(int(datelist[0]), int(datelist[1]), int(i))
@@ -35,19 +38,20 @@ for i in range(monthrange):
         firstdayofweek += 1
     else : firstdayofweek = 0
 
-first = true 
-for i in calen:    
-    match = false
-    for c in offdays
+first = True
+for i in calen:
+    m = 0
+    match = False
+    for c in offdays:
         if i[0] == c:
-            match = true
-            if first == true: 
-                i[1] = 5
-                first = false
-            else : i[1] = 6 
-    if match == true : first = false
-    else : first = true, match = false
-        
+            if first == True: 
+                calen[m][1] = 5
+            else : calen[m][1] = 6
+            match = True
+    if match == True : first = False
+    else : first = True
+    m += 1    
+print(calen)        
 """get the calender for the month of the schedule"""
    
    
