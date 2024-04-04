@@ -72,6 +72,7 @@ for i in workers:
 dayoffs = []
 for i in index:
     dayoffs.append(dayoffss[:i])
+    dayoffss = dayoffss[i:]
 
 
 print(dayoffs)
