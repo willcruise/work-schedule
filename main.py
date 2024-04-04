@@ -18,8 +18,8 @@ print("Enter the holidays: day1, day2, ... ex)4,5,6,15,29")
 holidays = input()
 holidays = holidays.replace(" ","").split(",")
 
-for i in range(len(offdays)): 
-    holidays[i] = int(offdays[i])
+for i in range(len(holidays)): 
+    holidays[i] = int(holidays[i])
 """get holidays for the month"""
 
 
@@ -56,13 +56,25 @@ for i in range(len(calen)):
     elif calen[i][1] == 6:
         calen[i].append(["일주","일야"])
 
-print(calen)
+print("Enter the workers: name1, name2, ...")
+workers = input()
+workers = workers.replace(" ","").split(",")
+"""get workers"""
 
-print("Enter the vacations and dayoffs of workers: name1: day1 ~ day2, day3, name2: ... ex)홍길동: 10 ~ 19, 25, 홍길둥: 14")
-dayoffs = input()
-dayoffs = dayoffs.replace(" ", "")
-dayoffs = dayoffs.split(":")
+print("Enter the dayoffs of workers: name1: day1 ~ day2, day3, name2: ... ex)홍길동: 10 ~ 19, 25, 홍길둥: 14")
+dayoffss = input()
+dayoffss = dayoffs.replace(" ", "")
 
+index = []
+for i in workers:
+    index.append(dayoffss.find(i))
+
+dayoffs = []
+for i in index:
+    dayoffs.append(dayoffss[:i])
+
+
+print(dayoffs)
     
 """get vacations, dayoffs for workers"""
 
