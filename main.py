@@ -61,25 +61,36 @@ print(calen)
 print("Enter the workers: name1, name2, ...")
 workers = input()
 workers = workers.replace(" ","").split(",")
-
 """get workers"""
 
-print("Enter the dayoffs of workers: name1: day1 ~ day2, day3, name2: ... ex)홍길동: 10 ~ 19, 25, 홍길둥: 14")
+print("Enter the dayoffs of workers; name1: day1 ~ day2, day3, name2: ... ex)홍길동: 10 ~ 19, 25, 홍길여: 14")
 dayoffss = input()
 dayoffss = dayoffss.replace(" ", "")
-
+dayoffs = {}
 if dayoffss != '':
     index = []
     for i in workers:
         index.append(dayoffss.find(i))
-
-    dayoffs = []
+    
+    for i in index:
+        if not 0 <= i < len(dayoffss):
+            index.remove(i)
+    
+    dayoffs_ = []
     for i in range(len(index)-1):
-        dayoffs.append(dayoffss[index[i]:index[i+1]])
-    dayoffs.append(dayoffss[index[len(index)-1]:])
+        dayoffs_.append(dayoffss[index[i]:index[i+1]])
+    dayoffs_.append(dayoffss[index[len(index)-1]:])
     
-    
-    
+    for i in dayoffs_:
+        a = i.split(":")
+        dayoffs[a[0]] = a[1]
+       
+for i in dayoffs:
+    dayoffs[i] = dayoffs[i].split(",")
+    if '' in dayoffs[i]: 
+        dayoffs[i].remove('')
+
+
 """get vacations, dayoffs for workers"""
 
 """allot duties for workers"""
