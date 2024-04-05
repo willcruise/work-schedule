@@ -90,6 +90,11 @@ for i in dayoffs:
     if '' in dayoffs[i]: 
         dayoffs[i].remove('')
 
+for i in dayoffs:
+    for c in i:
+        if '~' in c:
+            a = c.split("~")
+            
 
 """get vacations, dayoffs for workers"""
 
