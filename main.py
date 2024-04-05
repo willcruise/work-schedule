@@ -17,9 +17,9 @@ monthrange = calendar.monthrange(int(datelist[0]), int(datelist[1]))[1]
 print("Enter the holidays: day1, day2, ... ex)4,5,6,15,29")
 holidays = input()
 holidays = holidays.replace(" ","").split(",")
-
-for i in range(len(holidays)): 
-    holidays[i] = int(holidays[i])
+if holidays[0] != '':
+    for i in range(len(holidays)): 
+        holidays[i] = int(holidays[i])
 """get holidays for the month"""
 
 
@@ -42,9 +42,7 @@ for i in range(len(calen)):
         if yesteroff == True: calen[i][1] = 6
         yesteroff = True
     else: yesteroff = False
-        
-"""get the calender for the month of the schedule"""
-  
+    
 
 for i in range(len(calen)):
     if  calen[i][1] <= 3:
@@ -56,26 +54,31 @@ for i in range(len(calen)):
     elif calen[i][1] == 6:
         calen[i].append(["일주","일야"])
 
+
+print(calen)
+"""get the calender for the month of the schedule"""
+
 print("Enter the workers: name1, name2, ...")
 workers = input()
 workers = workers.replace(" ","").split(",")
+
 """get workers"""
 
 print("Enter the dayoffs of workers: name1: day1 ~ day2, day3, name2: ... ex)홍길동: 10 ~ 19, 25, 홍길둥: 14")
 dayoffss = input()
-dayoffss = dayoffs.replace(" ", "")
+dayoffss = dayoffss.replace(" ", "")
 
-index = []
-for i in workers:
-    index.append(dayoffss.find(i))
+if dayoffss != '':
+    index = []
+    for i in workers:
+        index.append(dayoffss.find(i))
 
-dayoffs = []
-for i in index:
-    dayoffs.append(dayoffss[:i])
-    dayoffss = dayoffss[i:]
-
-
-print(dayoffs)
+    dayoffs = []
+    for i in range(len(index)-1):
+        dayoffs.append(dayoffss[index[i]:index[i+1]])
+    dayoffs.append(dayoffss[index[len(index)-1]:])
+    
+    
     
 """get vacations, dayoffs for workers"""
 
