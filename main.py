@@ -161,7 +161,7 @@ for i in monthlyduties:
     
 
 
-"""group monthly duties complying to similarity of weight sum of each group"        
+"""group monthly duties for the weight sums of each group to be similar. Using greedy """        
         
         
 
@@ -183,8 +183,7 @@ for i in monthlyduties:
     
     
 """ optional modification point 1: set dutytypes
-    point 2 : set restrictions for each workers according to offdays 
-"""
+    point 2 : set restrictions for each workers according to offdays """
         
     
     
