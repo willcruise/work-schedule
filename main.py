@@ -148,6 +148,9 @@ monthlyduties.sort(reverse = True, key = dutysort)
 """get and sort montly services"""
 print (monthlyduties)
 
+dutygroups = {} 
+for i in range(len(workers)): dutygroups[i] = []
+
 for i in monthlyduties:
     
 
@@ -158,7 +161,7 @@ for i in monthlyduties:
     
 
 
-"""allot duties to each workers complying to similarity of work weights"        
+"""group monthly duties complying to similarity of weight sum of each group"        
         
         
 
