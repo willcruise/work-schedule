@@ -151,7 +151,35 @@ print (monthlyduties)
 dutygroups = {} 
 for i in range(len(workers)): dutygroups[i] = []
 
-for i in monthlyduties:
+
+def elementcnt(e):
+    return len(dutygroups[e])
+
+
+    
+for i in monthlyduties: 
+    takinggroup = []
+    sum = 0
+    d = dutygroups
+    for w in d:
+        csum = 0
+        for c in d[w]:
+            csum += weights[c]
+        if csum < sum : 
+            sum = csum
+            takinggroup.remove()
+            takinggroup.append(w)
+        elif csum == sum:
+            takinggroup.append(w)
+            
+        takinggroup.sort(key = elementcnt)
+    print(takinggroup)
+    finalgroup = takinggroup[0]
+    
+    dutygroups[finalgroup].append(i)
+    
+print(dutygroups)
+    
     
 
     
@@ -161,7 +189,7 @@ for i in monthlyduties:
     
 
 
-"""group monthly duties for the weight sums of each group to be similar. Using greedy """        
+"""group monthly duties for the weight sums of each group to be similar. Using greedy allocation"""        
         
         
 
