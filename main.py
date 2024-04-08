@@ -55,6 +55,8 @@ for i in range(len(calen)):
         calen[i].append(["일주","일야"])
 
 
+
+
 print(calen)
 """get the calender for the month of the schedule"""
 
@@ -63,7 +65,7 @@ workers = input()
 workers = workers.replace(" ","").split(",")
 """get workers"""
 
-print("Enter the dayoffs of workers; name1: day1 ~ day2, day3, name2: ... ex)홍길동: 10 ~ 19, 25, 홍길여: 14")
+print("Enter the dayoffs of workers; name1: day1 ~ day2, day3, name2: ...)
 dayoffss = input()
 dayoffss = dayoffss.replace(" ", "")
 dayoffs = {}
@@ -72,14 +74,18 @@ if dayoffss != '':
     for i in workers:
         index.append(dayoffss.find(i))
     
+    rem = []
     for i in index:
-        if not 0 <= i < len(dayoffss):
-            index.remove(i)
+        if -1 < i : pass
+        else: rem.append(index.index(i))
+    for i in rem: index.pop(i)
+
     
     dayoffs_ = []
     for i in range(len(index)-1):
         dayoffs_.append(dayoffss[index[i]:index[i+1]])
     dayoffs_.append(dayoffss[index[len(index)-1]:])
+    
     
     for i in dayoffs_:
         a = i.split(":")
@@ -90,11 +96,20 @@ for i in dayoffs:
     if '' in dayoffs[i]: 
         dayoffs[i].remove('')
 
+
 for i in dayoffs:
-    for c in i:
+    v = []
+    for c in dayoffs[i]:
         if '~' in c:
-            a = c.split("~")
-            
+            a = c.split('~')
+            for y in range(int(a[0]),int(a[1])+1):
+                v.append(y)
+        else: v.append(int(c))
+    dayoffs[i] = v
+print(dayoffs)
+                
+"""modify dayoffs"""
+        
 
 """get vacations, dayoffs for workers"""
 
