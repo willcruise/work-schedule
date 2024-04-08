@@ -26,10 +26,25 @@ if holidays[0] != '':
 calen = []
 
 for i in range(monthrange):
-    calen.append([i+1, firstdayofweek])
+    if firstdayofweek == 0:
+        calen.append([i+1, firstdayofweek, "월"])
+    elif firstdayofweek == 1:
+        calen.append([i+1, firstdayofweek, "화"])
+    elif firstdayofweek == 2:
+        calen.append([i+1, firstdayofweek, "수"])
+    elif firstdayofweek == 3:
+        calen.append([i+1, firstdayofweek, "목"])
+    elif firstdayofweek == 4:
+        calen.append([i+1, firstdayofweek, "금"])
+    elif firstdayofweek == 5:
+        calen.append([i+1, firstdayofweek, "토"])
+    else:
+        calen.append([i+1, firstdayofweek, "일"])
+    
     if firstdayofweek < 6:
         firstdayofweek += 1
     else : firstdayofweek = 0
+    
 
 for i in holidays:
     for c in range(len(calen)):
@@ -65,7 +80,7 @@ workers = input()
 workers = workers.replace(" ","").split(",")
 """get workers"""
 
-print("Enter the dayoffs of workers; name1: day1 ~ day2, day3, name2: ...)
+print("Enter the dayoffs of workers; name1: day1 ~ day2, day3, name2: ...")
 dayoffss = input()
 dayoffss = dayoffss.replace(" ", "")
 dayoffs = {}
@@ -106,9 +121,45 @@ for i in dayoffs:
                 v.append(y)
         else: v.append(int(c))
     dayoffs[i] = v
-print(dayoffs)
-                
+    
 """modify dayoffs"""
+        
+weights = {}
+weights["평야"] = 1
+weights["금야"] = 1.8
+weights["토야"] = 1.5
+weights["일야"] = 0.7
+weights["토주"] = 0
+weights["일주"] = 0
+
+dutytypes = ["평야", "금야", "토야", "일야", "토주", "일주"]
+
+        
+monthlyduties = []
+for i in calen:
+    for c in i[3]:
+        monthlyduties.append(c)
+
+def dutysort(e):
+    return weights[e]
+
+monthlyduties.sort(reverse = True, key = dutysort)
+
+"""get and sort montly services"""
+print (monthlyduties)
+
+for i in monthlyduties:
+    
+
+    
+        
+        
+
+    
+
+
+"""allot duties to each workers complying to similarity of work weights"        
+        
         
 
 """get vacations, dayoffs for workers"""
@@ -127,6 +178,11 @@ print(dayoffs)
     
 """final schedule"""
     
+    
+""" optional modification point 1: set dutytypes
+    point 2 : set restrictions for each workers according to offdays 
+"""
+        
     
     
     
