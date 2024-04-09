@@ -146,7 +146,6 @@ def dutysort(e):
 monthlyduties.sort(reverse = True, key = dutysort)
 
 """get and sort montly services"""
-print (monthlyduties)
 
 dutygroups = {} 
 for i in range(len(workers)): dutygroups[i] = []
@@ -156,28 +155,26 @@ def elementcnt(e):
     return len(dutygroups[e])
 
 
-    
 for i in monthlyduties: 
-    takinggroup = []
-    sum = 0
-    d = dutygroups
-    for w in d:
-        csum = 0
-        for c in d[w]:
-            csum += weights[c]
-        if csum < sum : 
-            sum = csum
-            takinggroup.remove()
-            takinggroup.append(w)
-        elif csum == sum:
-            takinggroup.append(w)
-            
-        takinggroup.sort(key = elementcnt)
-    print(takinggroup)
-    finalgroup = takinggroup[0]
+    groupweights = {}
+    sums = {}
+    for w in dutygroups:
+        d = []
+        for c in dutygroups[w]:
+            d.append(weights[c])
+        groupweights[w] = d
     
-    dutygroups[finalgroup].append(i)
+  
+        
+    for a in groupweights:
+        sums[a] = sum(groupweights[a])
+        
+   
+        
+    finkeys = list(dict(sorted(sums.items(), key = lambda a: a[1])))
     
+    
+    dutygroups[finkeys[0]].append(i)
 print(dutygroups)
     
     
