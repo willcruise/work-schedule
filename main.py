@@ -165,26 +165,51 @@ for i in monthlyduties:
         groupweights[w] = d
     
   
-        
     for a in groupweights:
         sums[a] = sum(groupweights[a])
-        
-   
         
     finkeys = list(dict(sorted(sums.items(), key = lambda a: a[1])))
     
     
     dutygroups[finkeys[0]].append(i)
 print(dutygroups)
-    
-    
 
+workerbyduties = {}
+for i in dutytypes:
+    workerbyduties[i] = []
+
+for i in dutygroups:
+    for c in dutygroups[i]:
+        for q in dutytypes:
+            if c == q:
+                workerbyduties[c].append(i)
+                break
+            else: pass
+        
+print(workerbyduties)
     
+daybyduties = {}
+for i in dutytypes:
+    daybyduties[i] = []
+
+for i in calen:
+    for c in i[3]:
+        for q in dutytypes:
+            if c == q:
+                daybyduties[c].append(i[0])
+                break
+            else: pass
+    
+print(daybyduties)
+
+day_workercases = []
+"""elements are dictionary"""
+
+for i in dutytypes:
+    workercnt = {}
+    for c in workerbyduties[i]:
         
         
-
-    
-
 
 """group monthly duties for the weight sums of each group to be similar. Using greedy allocation"""        
         
@@ -208,8 +233,9 @@ print(dutygroups)
     
     
 """ optional modification point 1: set dutytypes
-    point 2 : set restrictions for each workers according to offdays """
+    2 : set restrictions for each workers according to offdays 
         
+    3. use switch"""
     
     
     
