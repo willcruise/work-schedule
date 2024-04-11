@@ -1,6 +1,8 @@
 import calendar
 import datetime
 from collections import defaultdict
+import itertools
+
 
 print("Enter year and month: year-month ex)2024-3")
 yearmonth = input()
@@ -14,7 +16,6 @@ datetime_date = datetime.date(int(datelist[0]), int(datelist[1]), 1)
 firstdayofweek = datetime_date.weekday()
 monthrange = calendar.monthrange(int(datelist[0]), int(datelist[1]))[1]
 """get monthrange and day of week of the first day of month""" 
-print(monthrange)
 
 print("Enter the holidays: day1, day2, ... ex)4,5,6,15,29")
 holidays = input()
@@ -204,30 +205,49 @@ for i in calen:
     
 print(daybyduties)
 
-day_workercases = []
-"""elements are dictionary"""
-day_workerelement = {}
-matched = 0
 
-def combinationwithrepetition(arr, n):
-    g = []
-    for include in range(len(arr)-n):
-        previousarr = arr.remove(arr[include])
-        previous = combinationwithrepetition(previousarr,n-1)
-        for i in range(len(previous)): previous[i].append(arr[include])
-        for e in previous: g.append(e)
+def combinelists(a, b):
+    result = []
+    for i in b:
+        result.append(a+list(i))
+    return result
+
+
+
+for i in workerbyduties:
+        
+    workercnt = defaultdict(int)
+    for c in workerbyduties[i]:
+        workercnt[c] += 1 
+    workercnt = dict(workercnt)
     
-    return g
-
-
-while matched < monthrange:
-    for i in workerbyduties:
-        workercnt = defaultdict(int)
-        for c in workerbyduties[i]:
-            workercnt[c] += 1 
-        workercnt = dict(workercnt)
-        for 
+     = []
+    subject = [daybyduties[i]]
+    for q in workercnt:
+        combimid = []
+        for p in subject:
+            combi = list(itertools.combinations(p,workercnt[q]))
+            
+            a = []
+            for d in combi:
+                a.append(list(f for f in p if f not in d))
+            subject = a
+            
+            b = combimid
+            for v in combinelists(b, combi):
+                print(v)
+                combimid.append(v)
+                
+        for e in combimid:
+            result.append(e)
+        
+        
+        
+        
     
+
+
+
 
 
         
@@ -257,6 +277,9 @@ while matched < monthrange:
     2 : set restrictions for each workers according to offdays 
         
     3. use switch"""
+    
+"""mandatory modification points
+***do not pre decide 토주, 일주, yet decide it last which best fits***""" 
     
     
     
