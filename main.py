@@ -1,5 +1,6 @@
 import calendar
 import datetime
+from collections import defaultdict
 
 print("Enter year and month: year-month ex)2024-3")
 yearmonth = input()
@@ -13,6 +14,7 @@ datetime_date = datetime.date(int(datelist[0]), int(datelist[1]), 1)
 firstdayofweek = datetime_date.weekday()
 monthrange = calendar.monthrange(int(datelist[0]), int(datelist[1]))[1]
 """get monthrange and day of week of the first day of month""" 
+print(monthrange)
 
 print("Enter the holidays: day1, day2, ... ex)4,5,6,15,29")
 holidays = input()
@@ -204,11 +206,30 @@ print(daybyduties)
 
 day_workercases = []
 """elements are dictionary"""
+day_workerelement = {}
+matched = 0
 
-for i in dutytypes:
-    workercnt = {}
-    for c in workerbyduties[i]:
-        
+def combinationwithrepetition(arr, n):
+    g = []
+    for include in range(len(arr)-n):
+        previousarr = arr.remove(arr[include])
+        previous = combinationwithrepetition(previousarr,n-1)
+        for i in range(len(previous)): previous[i].append(arr[include])
+        for e in previous: g.append(e)
+    
+    return g
+
+
+while matched < monthrange:
+    for i in workerbyduties:
+        workercnt = defaultdict(int)
+        for c in workerbyduties[i]:
+            workercnt[c] += 1 
+        workercnt = dict(workercnt)
+        for 
+    
+
+
         
 
 """group monthly duties for the weight sums of each group to be similar. Using greedy allocation"""        
