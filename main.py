@@ -132,8 +132,8 @@ weights["평야"] = 1
 weights["금야"] = 1.8
 weights["토야"] = 1.5
 weights["일야"] = 0.7
-weights["토주"] = 0
-weights["일주"] = 0
+weights["토주"] = 0.1
+weights["일주"] = 0.1
 
 dutytypes = ["평야", "금야", "토야", "일야", "토주", "일주"]
 
@@ -209,7 +209,7 @@ print(daybyduties)
 def combinelists(a, b):
     result = []
     for i in b:
-        result.append(a+list(i))
+        result.append(list(a)+list(i))
     return result
 
 
@@ -221,26 +221,31 @@ for i in workerbyduties:
         workercnt[c] += 1 
     workercnt = dict(workercnt)
     
-     = []
-    subject = [daybyduties[i]]
     for q in workercnt:
-        combimid = []
-        for p in subject:
-            combi = list(itertools.combinations(p,workercnt[q]))
+        pegs = []
+        subject = []
+        for i in pegs:
+            subject = list(f for f in daybyduties[i] if f not in i)
+            
+        for p in range(len(subject)):
+            
+            combi = list(itertools.combinations(subp,workercnt[q]))
+            
+            combinelists(:
+                
+            
             
             a = []
+            h = []
             for d in combi:
+                h.append(d)
                 a.append(list(f for f in p if f not in d))
             subject = a
+            peg = list(combinelists(i, peg) for i in h)
             
-            b = combimid
-            for v in combinelists(b, combi):
-                print(v)
-                combimid.append(v)
-                
-        for e in combimid:
-            result.append(e)
+        result = peg
         
+      
         
         
         
