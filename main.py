@@ -222,27 +222,25 @@ for i in workerbyduties:
     for c in workerbyduties[i]:
         workercnt[c] += 1 
     workercnt = dict(workercnt)
-  
-    def elements1():
-        for q in workercnt:
-            subjects = []
-            if q == 0:
-                subjects = [daybyduties[i]]
-                yield list(itertools.combinations(subjects[0], workercnt[0]))
+    pegs = []      
+    for q in workercnt:
+        subjects = []
+        if q == 0:
+            subjects = [daybyduties[i]]
+            pegs = list(itertools.combinations(subjects[0], workercnt[0]))
             
-            else:
-                for u in list(elements1()):
-                    subjects.append(list(f for f in daybyduties[i] if f not in u))
+        else:
+            for u in pegs:
+                subjects.append(list(f for f in daybyduties[i] if f not in u))
         
-                def elements2():
-                    for p in range(len(subjects)):
+            def elements2():
+                for p in range(len(subjects)):
+                    combi = list(itertools.combinations(subjects[p],workercnt[q]))
+                    for o in combinelists(pegs[p], combi): yield(o)
             
-                        combi = list(itertools.combinations(subjects[p],workercnt[q]))
-                        for o in combinelists(list(elements1())[p], combi): yield(o)
-   
-                yield list(elements2())
-    
-    result[i] = list(elements1())    
+            pegs = list(elements2())
+            
+    result[i] = pegs  
         
     
 
