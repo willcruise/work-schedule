@@ -68,9 +68,9 @@ for i in range(len(calen)):
     elif calen[i][1] == 4:
         calen[i].append(["금야"])
     elif calen[i][1] == 5:
-        calen[i].append(["토주","토야"])
+        calen[i].append(["토야"])
     elif calen[i][1] == 6:
-        calen[i].append(["일주","일야"])
+        calen[i].append(["일야"])
 
 
 
@@ -132,10 +132,9 @@ weights["평야"] = 1
 weights["금야"] = 1.8
 weights["토야"] = 1.5
 weights["일야"] = 0.7
-weights["토주"] = 0.1
-weights["일주"] = 0.1
 
-dutytypes = ["평야", "금야", "토야", "일야", "토주", "일주"]
+
+dutytypes = ["평야", "금야", "토야", "일야"]
 
         
 monthlyduties = []
@@ -213,41 +212,41 @@ def combinelists(a, b):
     return result
 
 
+result = {}
 
 for i in workerbyduties:
+    result[i] = []
         
     workercnt = defaultdict(int)
     for c in workerbyduties[i]:
         workercnt[c] += 1 
     workercnt = dict(workercnt)
+  
+    
+    pegs = []
     
     for q in workercnt:
-        pegs = []
-        subject = []
-        for i in pegs:
-            subject = list(f for f in daybyduties[i] if f not in i)
+        subjects = []
+        if q == 0:
+            subjects = [daybyduties[i]]
+            pegs = list(itertools.combinations(subjects[0], workercnt[0]))
             
-        for p in range(len(subject)):
-            
-            combi = list(itertools.combinations(subp,workercnt[q]))
-            
-            combinelists(:
-                
-            
-            
-            a = []
-            h = []
-            for d in combi:
-                h.append(d)
-                a.append(list(f for f in p if f not in d))
-            subject = a
-            peg = list(combinelists(i, peg) for i in h)
-            
-        result = peg
+        else:
+            for u in pegs:
+                subjects.append(list(f for f in daybyduties[i] if f not in u))
         
-      
-        
-        
+            b = []   
+            for p in range(len(subjects)):
+            
+                combi = list(itertools.combinations(subjects[p],workercnt[q]))
+            
+                for o in combinelists(pegs[p], combi):
+               
+                    b.append(o)
+   
+            pegs = b
+    
+    result[i] = pegs    
         
     
 
