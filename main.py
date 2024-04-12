@@ -2,6 +2,8 @@ import calendar
 import datetime
 from collections import defaultdict
 import itertools
+import sys
+sys.setrecursionlimit(10**9)
 
 
 print("Enter year and month: year-month ex)2024-3")
@@ -215,38 +217,32 @@ def combinelists(a, b):
 result = {}
 
 for i in workerbyduties:
-    result[i] = []
         
     workercnt = defaultdict(int)
     for c in workerbyduties[i]:
         workercnt[c] += 1 
     workercnt = dict(workercnt)
   
-    
-    pegs = []
-    
-    for q in workercnt:
-        subjects = []
-        if q == 0:
-            subjects = [daybyduties[i]]
-            pegs = list(itertools.combinations(subjects[0], workercnt[0]))
+    def elements1():
+        for q in workercnt:
+            subjects = []
+            if q == 0:
+                subjects = [daybyduties[i]]
+                yield list(itertools.combinations(subjects[0], workercnt[0]))
             
-        else:
-            for u in pegs:
-                subjects.append(list(f for f in daybyduties[i] if f not in u))
+            else:
+                for u in list(elements1()):
+                    subjects.append(list(f for f in daybyduties[i] if f not in u))
         
-            b = []   
-            for p in range(len(subjects)):
+                def elements2():
+                    for p in range(len(subjects)):
             
-                combi = list(itertools.combinations(subjects[p],workercnt[q]))
-            
-                for o in combinelists(pegs[p], combi):
-               
-                    b.append(o)
+                        combi = list(itertools.combinations(subjects[p],workercnt[q]))
+                        for o in combinelists(list(elements1())[p], combi): yield(o)
    
-            pegs = b
+                yield list(elements2())
     
-    result[i] = pegs    
+    result[i] = list(elements1())    
         
     
 
