@@ -231,7 +231,7 @@ for i in workerbyduties:
             
         else:
             for u in pegs:
-                subjects.append(list(f for f in daybyduties[i] if f not in u))
+                subjects.append([f for f in daybyduties[i] if f not in u])
         
             def elements2():
                 for p in range(len(subjects)):
