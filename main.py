@@ -123,6 +123,8 @@ for i in dayoffs:
         else: v.append(int(c))
     dayoffs[i] = v
     
+print(dayoffs)
+    
 """modify dayoffs"""
         
 weights = {}
@@ -135,7 +137,7 @@ weights["일야"] = 0.7
 dutytypes = ["평야", "금야", "토야", "일야"]
 
 calen1 = [calen[i] for i in range(len(calen)//2)]  
-calen2 = [calen[i] for i in range(len(calen)//2,len(calen))]
+calen2 = [calen[i] for i in range(len(calen)//2, len(calen))]
 
 print(calen1)
 print(calen2)
@@ -271,12 +273,21 @@ combinations2 = combinations(workerbyduties2, daybyduties2)
 
 
 
-
-
-
-
-
+def matchdays(calen, combinations, workerbyduties):
+    calencombi = [calen]
+    for i in dutytypes:
+ 
+                
         
+                    yield y        
+
+        calencombi = list(assignworkers(calencombi))    
+    return calencombi
+
+calencombi1 = matchdays(calen1, combinations1, workerbyduties1)
+"""calencombi2 = matchdays(calen2, combinations2, workerbyduties2)"""
+    
+       
 
 """group monthly duties for the weight sums of each group to be similar. Using greedy allocation"""        
         
