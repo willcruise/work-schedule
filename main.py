@@ -2,8 +2,7 @@ import calendar
 import datetime
 from collections import defaultdict
 import itertools
-import sys
-sys.setrecursionlimit(10**9)
+
 
 
 print("Enter year and month: year-month ex)2024-3")
@@ -74,9 +73,6 @@ for i in range(len(calen)):
     elif calen[i][1] == 6:
         calen[i].append(["일야"])
 
-
-
-
 print(calen)
 """get the calender for the month of the schedule"""
 
@@ -138,73 +134,98 @@ weights["일야"] = 0.7
 
 dutytypes = ["평야", "금야", "토야", "일야"]
 
-        
-monthlyduties = []
-for i in calen:
-    for c in i[3]:
-        monthlyduties.append(c)
+calen1 = [calen[i] for i in range(len(calen)//2)]  
+calen2 = [calen[i] for i in range(len(calen)//2,len(calen))]
 
+print(calen1)
+print(calen2)
+        
+monthlyduties1 = []
+monthlyduties2 = []
+
+monthlyduties1 = [c[0] for c in [i[3] for i in calen1]]
+monthlyduties2 = [c[0] for c in [i[3] for i in calen2]]
+
+    
 def dutysort(e):
     return weights[e]
 
-monthlyduties.sort(reverse = True, key = dutysort)
+monthlyduties1.sort(reverse = True, key = dutysort)
+monthlyduties2.sort(reverse = True, key = dutysort)
 
 """get and sort montly services"""
 
-dutygroups = {} 
-for i in range(len(workers)): dutygroups[i] = []
+def dutygroups(monthlyduties):
+    dutygroups = {} 
+    for i in range(len(workers)): dutygroups[i] = []
 
 
-def elementcnt(e):
-    return len(dutygroups[e])
+    def elementcnt(e):
+        return len(dutygroups[e])
 
 
-for i in monthlyduties: 
-    groupweights = {}
-    sums = {}
-    for w in dutygroups:
-        d = []
-        for c in dutygroups[w]:
-            d.append(weights[c])
-        groupweights[w] = d
+    for i in monthlyduties: 
+        groupweights = {}
+        sums = {}
+        for w in dutygroups:
+            d = []
+            for c in dutygroups[w]:
+                d.append(weights[c])
+            groupweights[w] = d
     
   
-    for a in groupweights:
-        sums[a] = sum(groupweights[a])
+        for a in groupweights:
+            sums[a] = sum(groupweights[a])
         
-    finkeys = list(dict(sorted(sums.items(), key = lambda a: a[1])))
+        finkeys = list(dict(sorted(sums.items(), key = lambda a: a[1])))
     
+        dutygroups[finkeys[0]].append(i)
     
-    dutygroups[finkeys[0]].append(i)
-print(dutygroups)
+    return dutygroups
 
-workerbyduties = {}
-for i in dutytypes:
-    workerbyduties[i] = []
+dutygroups1 = dutygroups(monthlyduties1)
+dutygroups2 = dutygroups(monthlyduties2)
 
-for i in dutygroups:
-    for c in dutygroups[i]:
-        for q in dutytypes:
-            if c == q:
-                workerbyduties[c].append(i)
-                break
-            else: pass
-        
-print(workerbyduties)
-    
-daybyduties = {}
-for i in dutytypes:
-    daybyduties[i] = []
 
-for i in calen:
-    for c in i[3]:
-        for q in dutytypes:
-            if c == q:
-                daybyduties[c].append(i[0])
-                break
-            else: pass
+def workerbyduties(dutygroups):
+    workerbyduties = {}
+    for i in dutytypes:
+        workerbyduties[i] = []
+
+    for i in dutygroups:
+        for c in dutygroups[i]:
+            for q in dutytypes:
+                if c == q:
+                    workerbyduties[c].append(i)
+                    break
+                else: pass
+    return workerbyduties
     
-print(daybyduties)
+workerbyduties1 = workerbyduties(dutygroups1)
+workerbyduties2 = workerbyduties(dutygroups2)
+
+print(workerbyduties1)
+print(workerbyduties2)
+
+def daybyduties(calen):    
+    daybyduties = {}
+    for i in dutytypes:
+        daybyduties[i] = []
+
+    for i in calen:
+        for c in i[3]:
+            for q in dutytypes:
+                if c == q:
+                    daybyduties[c].append(i[0])
+                    break
+                else: pass
+    return daybyduties
+    
+daybyduties1 = daybyduties(calen1)
+daybyduties2 = daybyduties(calen2)
+
+print(daybyduties1)
+print(daybyduties2)
 
 
 def combinelists(a, b):
@@ -214,35 +235,42 @@ def combinelists(a, b):
     return result
 
 
-result = {}
+def combinations(workerbyduties, daybyduties):
+    result = {}
 
-for i in workerbyduties:
+    for i in workerbyduties:
         
-    workercnt = defaultdict(int)
-    for c in workerbyduties[i]:
-        workercnt[c] += 1 
-    workercnt = dict(workercnt)
-    pegs = []      
-    for q in workercnt:
-        subjects = []
-        if q == 0:
-            subjects = [daybyduties[i]]
-            pegs = list(itertools.combinations(subjects[0], workercnt[0]))
+        workercnt = defaultdict(int)
+        for c in workerbyduties[i]:
+            workercnt[c] += 1 
+        workercnt = dict(workercnt)
+        pegs = []      
+        for q in workercnt:
+            subjects = []
+            if q == 0:
+                subjects = [daybyduties[i]]
+                pegs = list(itertools.combinations(subjects[0], workercnt[0]))
             
-        else:
-            for u in pegs:
-                subjects.append([f for f in daybyduties[i] if f not in u])
+            else:
+                for u in pegs:
+                    subjects.append([f for f in daybyduties[i] if f not in u])
         
-            def elements2():
-                for p in range(len(subjects)):
-                    combi = list(itertools.combinations(subjects[p],workercnt[q]))
-                    for o in combinelists(pegs[p], combi): yield(o)
+                def elements2():
+                    for p in range(len(subjects)):
+                        combi = list(itertools.combinations(subjects[p],workercnt[q]))
+                        for o in combinelists(pegs[p], combi): yield(o)
             
-            pegs = list(elements2())
+                pegs = list(elements2())
             
-    result[i] = pegs  
-        
+        result[i] = pegs  
     
+    return result
+    
+combinations1 = combinations(workerbyduties1, daybyduties1)
+combinations2 = combinations(workerbyduties2, daybyduties2)
+
+
+
 
 
 
