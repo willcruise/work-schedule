@@ -291,22 +291,35 @@ matchcombi1 = matchdays(combinations1, workerbyduties1)
 matchcombi2 = matchdays(combinations2, workerbyduties2)
 
 
-def finalmatch(matchcombi):
-    finalcalen = {}
-    
-    def elementyield(list):
-        for g in list:
-            yield g
+def matchyield(matchcombi):
+    result = []
+    indices = {}
     
     for d in dutytypes:
-        matchcombi[d]
+        indices[d] = 0
     
+    def combinevalues(dict):
+        result2 = {}
+        for i in dutytypes:
+            result2.update(dict[i][indices[i]])
+        return result2 
         
-    yield finalcalen        
-                
+    for h in range(len(matchcombi['평야'])):
+        indices["평야"] = h
+        for g in range(len(matchcombi['금야'])):
+            indices["금야"] = g
+            for j in range(len(matchcombi["토야"])):
+                indices["토야"] = j
+                for s in range(len(matchcombi['일야'])):
+                    indices["일야"] = s
+                    print(combinevalues(matchcombi))
+                    result.append(combinevalues(matchcombi))
+    
+    return result
+    
+finalmatch1 = matchyield(matchcombi1)
+finalcalen2 = matchyield(matchcombi2)
 
-finalcalen1 = 0
-finalcalen2 = 0
 
 
 """calencombi2 = matchdays(calen2, combinations2, workerbyduties2)"""
