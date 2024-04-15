@@ -236,6 +236,27 @@ def combinelists(a, b):
         result.append(list(a)+list(i))
     return result
 
+def makecombinations(list, r):
+    result = []
+    indices =list(range(r))
+    n = len(list)
+    result.append([list[i] for i in indices])
+    while True:
+        for i in reversed(range(r)):
+            if indices[i] != i + n - r:
+                break
+        else:
+            return
+        indices[i] += 1
+        for j in range(i+1, r):
+            indices[j] = indices[j-1] + 1
+        result.append([list[i] for i in indices])
+    
+    return result
+    
+    
+    
+
 
 def combinations(workerbyduties, daybyduties):
     result = {}
@@ -249,10 +270,10 @@ def combinations(workerbyduties, daybyduties):
         pegs = []      
         for q in workercnt:
             subjects = []
-            if q == 0:
+            if subjects == []:
                 subjects = [daybyduties[i]]
-                pegs = list(itertools.combinations(subjects[0], workercnt[0]))
-            
+                pegs = list(itertools.combinations(subjects[0], workercnt[q]))
+                
             else:
                 for u in pegs:
                     subjects.append([f for f in daybyduties[i] if f not in u])
@@ -270,7 +291,6 @@ def combinations(workerbyduties, daybyduties):
     
 combinations1 = combinations(workerbyduties1, daybyduties1)
 combinations2 = combinations(workerbyduties2, daybyduties2)
-
 
 
 
@@ -312,7 +332,6 @@ def matchyield(matchcombi):
                 indices["토야"] = j
                 for s in range(len(matchcombi['일야'])):
                     indices["일야"] = s
-                    print(combinevalues(matchcombi))
                     result.append(combinevalues(matchcombi))
     
     return result
@@ -320,6 +339,7 @@ def matchyield(matchcombi):
 finalmatch1 = matchyield(matchcombi1)
 finalcalen2 = matchyield(matchcombi2)
 
+print(finalmatch1['토야'])
 
 
 """calencombi2 = matchdays(calen2, combinations2, workerbyduties2)"""
