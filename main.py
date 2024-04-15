@@ -273,19 +273,45 @@ combinations2 = combinations(workerbyduties2, daybyduties2)
 
 
 
-def matchdays(calen, combinations, workerbyduties):
-    calencombi = [calen]
-    for i in dutytypes:
- 
-                
+
+def matchdays(combinations, workerbyduties):
+    
+    matchcombi1 = defaultdict(list)
+    for t in dutytypes:
+        for i in combinations[t]:
+            matchcombi2 = {}
+            for q in range(len(i)):
+                matchcombi2[i[q]] = workerbyduties[t][q]
+            matchcombi1[t].append(matchcombi2)        
         
-                    yield y        
+    return dict(matchcombi1)
+            
 
-        calencombi = list(assignworkers(calencombi))    
-    return calencombi
+matchcombi1 = matchdays(combinations1, workerbyduties1)
+matchcombi2 = matchdays(combinations2, workerbyduties2)
 
-calencombi1 = matchdays(calen1, combinations1, workerbyduties1)
+
+def finalmatch(matchcombi):
+    finalcalen = {}
+    
+    def elementyield(list):
+        for g in list:
+            yield g
+    
+    for d in dutytypes:
+        matchcombi[d]
+    
+        
+    yield finalcalen        
+                
+
+finalcalen1 = 0
+finalcalen2 = 0
+
+
 """calencombi2 = matchdays(calen2, combinations2, workerbyduties2)"""
+
+
     
        
 
