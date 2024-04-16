@@ -310,18 +310,33 @@ matchcombi2 = matchdays(combinations2, workerbyduties2)
 
 
 def permutations(l):
-    result = []
-    if type(l) == int:
-        return [l]
+    
+    if len(l) == 2:
+        result = []
+        result.append(l)
+        a= []
+        a.append(l[1])
+        a.append(l[0])
+        result.append(a)
+        return result
+        
     else:
         e = l[0]
-        l.pop(0)
+        l.remove(e)
         per = permutations(l)
-        for j in per:
-            for i in range(len(j)+1):
-                result.append(j.insert(i, e))
         
-        return result
+        def yieldins(per):
+            
+            for j in range(len(per)):
+                temp = per[j]
+                temp.insert()
+                
+                
+                yield list(yieldins2(per[j], e))
+                
+                
+      
+        return list(yieldins(per))
  
 
 
