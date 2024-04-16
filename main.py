@@ -340,30 +340,45 @@ def permutations(l):
  
 
 
-def matchyield(matchcombi):
-    result = []
-    indices = {}
+
+def insertindex(l, i):
     
-    for d in dutytypes:
-        indices[d] = 0
+
+def permutations(l):
     
-    def combinevalues(dict):
-        result2 = {}
-        for i in dutytypes:
-            result2.update(dict[i][indices[i]])
-        return result2 
+    if len(l) == 2:
+        result = []
+        result.append(l)
+        a= []
+        a.append(l[1])
+        a.append(l[0])
+        result.append(a)
+        return result
         
-    for h in range(len(matchcombi['평야'])):
-        indices["평야"] = h
-        for g in range(len(matchcombi['금야'])):
-            indices["금야"] = g
-            for j in range(len(matchcombi["토야"])):
-                indices["토야"] = j
-                for s in range(len(matchcombi['일야'])):
-                    indices["일야"] = s
-                    result.append(combinevalues(matchcombi))
+    else:
+        e = l[0]
+        l.remove(e)
+        per = permutations(l)
+        
+        def yieldins(per, e):
+            
+            for j in range(len(per)):
+                res = []
+                temp = per[j]
+                for i in range(len(per[j])+1):
+                    
+                    
+                    """res.append(a)"""
+                    temp.pop(i)
+                
+                
+                yield res
+                
+                
+      
+        return list(yieldins(per, e))
  
-    return result
+
     
 finalmatch1 = matchyield(matchcombi1)
 finalmatch2 = matchyield(matchcombi2)
