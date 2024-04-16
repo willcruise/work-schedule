@@ -236,11 +236,12 @@ def combinelists(a, b):
         result.append(list(a)+list(i))
     return result
 
-def makecombinations(list, r):
+def makecombinations(ll, r):
     result = []
+    final = []
     indices =list(range(r))
-    n = len(list)
-    result.append([list[i] for i in indices])
+    n = len(ll)
+    yield [ll[i] for i in indices]
     while True:
         for i in reversed(range(r)):
             if indices[i] != i + n - r:
@@ -250,13 +251,9 @@ def makecombinations(list, r):
         indices[i] += 1
         for j in range(i+1, r):
             indices[j] = indices[j-1] + 1
-        result.append([list[i] for i in indices])
+        yield [ll[i] for i in indices]
+        
     
-    return result
-    
-    
-    
-
 
 def combinations(workerbyduties, daybyduties):
     result = {}
@@ -270,17 +267,16 @@ def combinations(workerbyduties, daybyduties):
         pegs = []      
         for q in workercnt:
             subjects = []
-            if subjects == []:
+            if pegs == []:
                 subjects = [daybyduties[i]]
-                pegs = list(itertools.combinations(subjects[0], workercnt[q]))
-                
+                pegs = list(makecombinations(subjects[0], workercnt[q]))
             else:
                 for u in pegs:
                     subjects.append([f for f in daybyduties[i] if f not in u])
         
                 def elements2():
                     for p in range(len(subjects)):
-                        combi = list(itertools.combinations(subjects[p],workercnt[q]))
+                        combi = list(makecombinations(subjects[p], workercnt[q]))
                         for o in combinelists(pegs[p], combi): yield(o)
             
                 pegs = list(elements2())
@@ -291,6 +287,8 @@ def combinations(workerbyduties, daybyduties):
     
 combinations1 = combinations(workerbyduties1, daybyduties1)
 combinations2 = combinations(workerbyduties2, daybyduties2)
+
+print(combinations1['토야'])
 
 
 
@@ -309,6 +307,22 @@ def matchdays(combinations, workerbyduties):
 
 matchcombi1 = matchdays(combinations1, workerbyduties1)
 matchcombi2 = matchdays(combinations2, workerbyduties2)
+
+
+def permutations(l):
+    result = []
+    if type(l) == int:
+        return [l]
+    else:
+        e = l[0]
+        l.pop(0)
+        per = permutations(l)
+        for j in per:
+            for i in range(len(j)+1):
+                result.append(j.insert(i, e))
+        
+        return result
+ 
 
 
 def matchyield(matchcombi):
@@ -333,13 +347,25 @@ def matchyield(matchcombi):
                 for s in range(len(matchcombi['일야'])):
                     indices["일야"] = s
                     result.append(combinevalues(matchcombi))
-    
+ 
     return result
     
 finalmatch1 = matchyield(matchcombi1)
-finalcalen2 = matchyield(matchcombi2)
+finalmatch2 = matchyield(matchcombi2)
 
-print(finalmatch1['토야'])
+def permutations(l):
+    indices = [i for i in range(len(l))]
+    
+
+
+def assignworkers(finalmatch):
+    result = []
+    
+    for d in finalmatch:
+        
+
+def excludeoff(finalmatch):
+    
 
 
 """calencombi2 = matchdays(calen2, combinations2, workerbyduties2)"""
