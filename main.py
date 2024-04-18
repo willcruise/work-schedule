@@ -313,6 +313,7 @@ matchcombi1 = matchdays(combinations1, workerbyduties1)
 matchcombi2 = matchdays(combinations2, workerbyduties2)
 matchcombi3 = matchdays(combinations3, workerbyduties3)
 
+
 def combimerge(matchcombi):
     indices = {d: 0 for d in matchcombi}
     first = {}
@@ -341,6 +342,7 @@ def combimerge(matchcombi):
 combimerge1 = list(combimerge(matchcombi1))
 combimerge2 = list(combimerge(matchcombi2))
 combimerge3 = list(combimerge(matchcombi3))
+
 
 def insertelement(l, e):
     result = []
@@ -374,23 +376,23 @@ def permutations(l):
                 
         return list(yieldins(per))
 
+workerper = permutations(workers)
 
 def finalcalen(combimerge):
-    wcnt = len(workers)
+    
   
-    for l in permutations(workers):
-        match = {n : l[n] for n in range(wcnt)}
-  
-        for e in combimerge:
-            element = {k: match[e[k]] for k in e}
+    for e in combimerge:
+        for w in workerper:
+            match = {n : w[n] for n in range(len(workers))}
+            element = {k : match[e[k]] for k in e}
+            print(element)
             yield(element)    
        
         
-"""finalcalen1 = list(finalcalen(combimerge1))"""
-
+finalcalen1 = list(finalcalen(combimerge1))
 finalcalen2 = list(finalcalen(combimerge2))
-finalcalen3 = list(finalcalen(combimerge3))    
-
+finalcalen3 = list(finalcalen(combimerge3)) 
+print(finalcalen1)
     
 """
 
