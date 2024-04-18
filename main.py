@@ -79,6 +79,7 @@ print(calen)
 print("Enter the workers: name1, name2, ...")
 workers = input()
 workers = workers.replace(" ","").split(",")
+
 """get workers"""
 
 print("Enter the dayoffs of workers; name1: day1 ~ day2, day3, name2: ...")
@@ -136,27 +137,28 @@ weights["일야"] = 0.7
 
 dutytypes = ["평야", "금야", "토야", "일야"]
 
-calen1 = [calen[i] for i in range(len(calen)//2)]  
-calen2 = [calen[i] for i in range(len(calen)//2, len(calen))]
+calen1 = [calen[i] for i in range(len(calen)//3)]  
+calen2 = [calen[i] for i in range(len(calen)//3, len(calen)*2//3)]
+calen3 = [calen[i] for i in range(len(calen)*2//3, len(calen))]
 
 print(calen1)
 print(calen2)
-    
+print(calen3)    
 
 monthlyduties1 = []
 monthlyduties2 = []
-
+monthlyduties3 = []
 
 monthlyduties1 = [c[0] for c in [i[3] for i in calen1]]
 monthlyduties2 = [c[0] for c in [i[3] for i in calen2]]
-
+monthlyduties3 = [c[0] for c in [i[3] for i in calen3]]
     
 def dutysort(e):
     return weights[e]
 
 monthlyduties1.sort(reverse = True, key = dutysort)
 monthlyduties2.sort(reverse = True, key = dutysort)
-
+monthlyduties3.sort(reverse = True, key = dutysort)
 """get and sort montly services"""
 
 def dutygroups(monthlyduties):
@@ -189,7 +191,7 @@ def dutygroups(monthlyduties):
 
 dutygroups1 = dutygroups(monthlyduties1)
 dutygroups2 = dutygroups(monthlyduties2)
-
+dutygroups3 = dutygroups(monthlyduties3)
 
 def workerbyduties(dutygroups):
     workerbyduties = {}
@@ -207,11 +209,11 @@ def workerbyduties(dutygroups):
     
 workerbyduties1 = workerbyduties(dutygroups1)
 workerbyduties2 = workerbyduties(dutygroups2)
-
+workerbyduties3 = workerbyduties(dutygroups3)
 
 print(workerbyduties1)
 print(workerbyduties2)
-
+print(workerbyduties3)
 
 def daybyduties(calen):    
     daybyduties = {}
@@ -229,10 +231,11 @@ def daybyduties(calen):
     
 daybyduties1 = daybyduties(calen1)
 daybyduties2 = daybyduties(calen2)
+daybyduties3 = daybyduties(calen3)
 
 print(daybyduties1)
 print(daybyduties2)
-
+print(daybyduties3)
 
 def combinelists(a, b):
     result = []
@@ -291,7 +294,7 @@ def combinations(workerbyduties, daybyduties):
     
 combinations1 = combinations(workerbyduties1, daybyduties1)
 combinations2 = combinations(workerbyduties2, daybyduties2)
-
+combinations3 = combinations(workerbyduties3, daybyduties3)
 
 def matchdays(combinations, workerbyduties):
     
@@ -308,7 +311,7 @@ def matchdays(combinations, workerbyduties):
 
 matchcombi1 = matchdays(combinations1, workerbyduties1)
 matchcombi2 = matchdays(combinations2, workerbyduties2)
-
+matchcombi3 = matchdays(combinations3, workerbyduties3)
 
 def combimerge(matchcombi):
     indices = {d: 0 for d in matchcombi}
@@ -337,6 +340,7 @@ def combimerge(matchcombi):
  
 combimerge1 = list(combimerge(matchcombi1))
 combimerge2 = list(combimerge(matchcombi2))
+combimerge3 = list(combimerge(matchcombi3))
 
 def insertelement(l, e):
     result = []
@@ -372,7 +376,25 @@ def permutations(l):
 
 
 def finalcalen(combimerge):
-    
+    wcnt = len(workers)
+  
+    for l in permutations(workers):
+        match = {n : l[n] for n in range(wcnt)}
+  
+        for e in combimerge:
+            element = {}
+            for k in e:
+                element[k] = match[e[k]]
+                
+         
+            yield(element)    
+       
+        
+finalcalen1 = list(finalcalen(combimerge1))
+print('a')
+finalcalen2 = list(finalcalen(combimerge2))
+print('b')
+finalcalen3 = list(finalcalen(combimerge3))    
 
     
 """
