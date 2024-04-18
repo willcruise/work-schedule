@@ -1,0 +1,33 @@
+
+def insertelement(l, e):
+    result = []
+    for i in range(len(l) + 1):
+        first = l[:i]
+        second = l[i:]
+        element = first + [e] + second
+        result.append(element)
+    return result
+    
+def permutations(l):
+    
+    if len(l) == 2:
+        result = []
+        result.append(l)
+        a= []
+        a.append(l[1])
+        a.append(l[0])
+        result.append(a)
+        return result
+        
+    else:
+        e = l[0]
+        l.remove(e)
+        per = permutations(l)
+        
+        def yieldins(per):
+            for j in range(len(per)):
+                yield insertelement(per[j], e)
+                
+        return list(yieldins(per))
+        
+print(list(permutations([1,2,3,4,5,6,7])))
