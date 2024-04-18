@@ -382,18 +382,13 @@ def finalcalen(combimerge):
         match = {n : l[n] for n in range(wcnt)}
   
         for e in combimerge:
-            element = {}
-            for k in e:
-                element[k] = match[e[k]]
-                
-         
+            element = {k: match[e[k]] for k in e}
             yield(element)    
        
         
-finalcalen1 = list(finalcalen(combimerge1))
-print('a')
+"""finalcalen1 = list(finalcalen(combimerge1))"""
+
 finalcalen2 = list(finalcalen(combimerge2))
-print('b')
 finalcalen3 = list(finalcalen(combimerge3))    
 
     
