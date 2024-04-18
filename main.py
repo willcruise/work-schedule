@@ -288,7 +288,6 @@ def combinations(workerbyduties, daybyduties):
 combinations1 = combinations(workerbyduties1, daybyduties1)
 combinations2 = combinations(workerbyduties2, daybyduties2)
 
-print(combinations1['토야'])
 
 
 
@@ -308,6 +307,38 @@ def matchdays(combinations, workerbyduties):
 matchcombi1 = matchdays(combinations1, workerbyduties1)
 matchcombi2 = matchdays(combinations2, workerbyduties2)
 
+print(matchcombi1)
+
+def combimerge(matchcombi):
+    indices = {d: 0 for d in matchcombi}
+    first = {}
+    for d in matchcombi:
+        first.update(matchcombi[d][0])
+    yield first
+    while True:
+        for d in indices:
+            if indices[d] != len(matchcombi) - 1: break
+        else: return
+    
+        
+        for d in indices:
+            if indices[d] != len(matchcombi) - 1:
+                indices[d] += 1
+                break
+            else: indices[d] = 0
+            
+        
+        merged = {}
+        for d in indices:
+            merged.update(matchcombi[d][indices[d]])
+        print(merged)
+        yield merged            
+ 
+combimerge1 = list(combimerge(matchcombi1))           
+            
+
+    
+"""
 
 def permutations(l):
     
@@ -368,7 +399,7 @@ def permutations(l):
                 for i in range(len(per[j])+1):
                     
                     
-                    """res.append(a)"""
+                    res.append(a)
                     temp.pop(i)
                 
                 
@@ -391,11 +422,11 @@ def permutations(l):
 def assignworkers(finalmatch):
     result = []
     
-    for d in finalmatch:
+    for d in finalmatch:pass
         
 
-def excludeoff(finalmatch):
-    
+def excludeoff(finalmatch):pass
+    """
 
 
 """calencombi2 = matchdays(calen2, combinations2, workerbyduties2)"""
