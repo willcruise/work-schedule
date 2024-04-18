@@ -376,16 +376,15 @@ def permutations(l):
                 
         return list(yieldins(per))
 
-workerper = permutations(workers)
+
 
 def finalcalen(combimerge):
     
   
-    for e in combimerge:
-        for w in workerper:
+    for w in permutations(workers):
+        for e in combimerge:
             match = {n : w[n] for n in range(len(workers))}
             element = {k : match[e[k]] for k in e}
-            print(element)
             yield(element)    
        
         
