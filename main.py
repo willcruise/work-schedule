@@ -141,9 +141,11 @@ calen2 = [calen[i] for i in range(len(calen)//2, len(calen))]
 
 print(calen1)
 print(calen2)
-        
+    
+
 monthlyduties1 = []
 monthlyduties2 = []
+
 
 monthlyduties1 = [c[0] for c in [i[3] for i in calen1]]
 monthlyduties2 = [c[0] for c in [i[3] for i in calen2]]
@@ -206,8 +208,10 @@ def workerbyduties(dutygroups):
 workerbyduties1 = workerbyduties(dutygroups1)
 workerbyduties2 = workerbyduties(dutygroups2)
 
+
 print(workerbyduties1)
 print(workerbyduties2)
+
 
 def daybyduties(calen):    
     daybyduties = {}
@@ -289,8 +293,6 @@ combinations1 = combinations(workerbyduties1, daybyduties1)
 combinations2 = combinations(workerbyduties2, daybyduties2)
 
 
-
-
 def matchdays(combinations, workerbyduties):
     
     matchcombi1 = defaultdict(list)
@@ -307,7 +309,6 @@ def matchdays(combinations, workerbyduties):
 matchcombi1 = matchdays(combinations1, workerbyduties1)
 matchcombi2 = matchdays(combinations2, workerbyduties2)
 
-print(matchcombi1)
 
 def combimerge(matchcombi):
     indices = {d: 0 for d in matchcombi}
@@ -316,26 +317,29 @@ def combimerge(matchcombi):
         first.update(matchcombi[d][0])
     yield first
     while True:
+  
         for d in indices:
-            if indices[d] != len(matchcombi) - 1: break
+            if indices[d] < len(matchcombi[d]) - 1 : break
         else: return
     
-        
         for d in indices:
-            if indices[d] != len(matchcombi) - 1:
+           
+            if indices[d] < len(matchcombi[d]) - 1:
                 indices[d] += 1
                 break
-            else: indices[d] = 0
-            
-        
+            else: 
+                indices[d] = 0
+                                
         merged = {}
         for d in indices:
             merged.update(matchcombi[d][indices[d]])
-        print(merged)
         yield merged            
  
-combimerge1 = list(combimerge(matchcombi1))           
+combimerge1 = list(combimerge(matchcombi1))
+combimerge2 = list(combimerge(matchcombi2))
             
+def finalcalen(combimerge):
+    
 
     
 """
@@ -419,11 +423,6 @@ def permutations(l):
     
 
 
-def assignworkers(finalmatch):
-    result = []
-    
-    for d in finalmatch:pass
-        
 
 def excludeoff(finalmatch):pass
     """
