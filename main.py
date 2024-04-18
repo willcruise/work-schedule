@@ -337,19 +337,22 @@ def combimerge(matchcombi):
  
 combimerge1 = list(combimerge(matchcombi1))
 combimerge2 = list(combimerge(matchcombi2))
-            
-def finalcalen(combimerge):
-    
 
+def insertelement(l, e):
+    result = []
+    for i in range(len(l) + 1):
+        first = l[:i]
+        second = l[i:]
+        element = first + [e] + second
+        result.append(element)
+    return result
     
-"""
-
 def permutations(l):
     
     if len(l) == 2:
         result = []
         result.append(l)
-        a= []
+        a = []
         a.append(l[1])
         a.append(l[0])
         result.append(a)
@@ -361,74 +364,26 @@ def permutations(l):
         per = permutations(l)
         
         def yieldins(per):
-            
-            for j in range(len(per)):
-                temp = per[j]
-                temp.insert()
+            for j in per:
+                for q in insertelement(j, e):
+                    yield q
                 
-                
-                yield list(yieldins2(per[j], e))
-                
-                
-      
         return list(yieldins(per))
- 
 
 
-
-def insertindex(l, i):
+def finalcalen(combimerge):
     
 
-def permutations(l):
     
-    if len(l) == 2:
-        result = []
-        result.append(l)
-        a= []
-        a.append(l[1])
-        a.append(l[0])
-        result.append(a)
-        return result
-        
-    else:
-        e = l[0]
-        l.remove(e)
-        per = permutations(l)
-        
-        def yieldins(per, e):
-            
-            for j in range(len(per)):
-                res = []
-                temp = per[j]
-                for i in range(len(per[j])+1):
-                    
-                    
-                    res.append(a)
-                    temp.pop(i)
-                
-                
-                yield res
-                
-                
-      
-        return list(yieldins(per, e))
- 
-
-    
-finalmatch1 = matchyield(matchcombi1)
-finalmatch2 = matchyield(matchcombi2)
-
-def permutations(l):
-    indices = [i for i in range(len(l))]
-    
+"""
 
 
 
 def excludeoff(finalmatch):pass
-    """
+  
 
 
-"""calencombi2 = matchdays(calen2, combinations2, workerbyduties2)"""
+calencombi2 = matchdays(calen2, combinations2, workerbyduties2)"""
 
 
     
