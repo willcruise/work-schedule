@@ -83,8 +83,24 @@ workers = workers.replace(" ","").split(",")
 """get workers"""
 
 print("Enter the dayoffs of workers; name1: day1 ~ day2, day3, name2: ...")
-dayoffss = input()
-dayoffss = dayoffss.replace(" ", "")
+dayoffs = input()
+
+def precessdayoff(dayoffs):
+    temp = dayoffs.replace(" ", "")
+    
+    workerindex = []
+    for q in workers:
+        for w in range(len(temp)):
+            if temp[w] == q: workerindex.append(w)
+            
+    resultdraft = {}
+    for e in workerindex:
+        
+
+
+dayoffs = processdayoffs(dayoffs)
+    
+dayoffs = dayoffss.replace(" ", "")
 dayoffs = {}
 if dayoffss != '':
     index = []
@@ -112,6 +128,7 @@ for i in dayoffs:
     dayoffs[i] = dayoffs[i].split(",")
     if '' in dayoffs[i]: 
         dayoffs[i].remove('')
+
 
 
 for i in dayoffs:
@@ -313,13 +330,38 @@ matchcombi1 = matchdays(combinations1, workerbyduties1)
 matchcombi2 = matchdays(combinations2, workerbyduties2)
 matchcombi3 = matchdays(combinations3, workerbyduties3)
 
+'''from now, merge the divided calender'''
+
+matchcombi = [matchcombi1, matchcombi2, matchcombi3]
+
+groups = {}
+cnt = 0
+for q in matchcombi:
+    for w in q:
+        groups[cnt] = q[w]
+        cnt += 1
+
+
+def sortandtest(merged):
+    sortedcal = dict(sorted(merged.items()))
+    previous = -1
+    for q in sortedcal:
+        if sortedcal[q] == previous: return
+        previous = sortedcal[q]
+    else:
+        return sortedcal
+        
 
 def combimerge(matchcombi):
     indices = {d: 0 for d in matchcombi}
     first = {}
     for d in matchcombi:
         first.update(matchcombi[d][0])
-    yield first
+        
+    if sortandtest(first) == None:
+        yield from []
+    else : yield sortandtest(first)
+    
     while True:
   
         for d in indices:
@@ -337,12 +379,82 @@ def combimerge(matchcombi):
         merged = {}
         for d in indices:
             merged.update(matchcombi[d][indices[d]])
-        yield merged            
+            
+        if sortandtest(merged) == None: yield from []
+        else: yield sortandtest(merged)            
+
+
+calendraft = list(combimerge(groups))
+
+def insertelement(l, e):
+    result = []
+    for i in range(len(l) + 1):
+        first = l[:i]
+        second = l[i:]
+        element = first + [e] + second
+        result.append(element)
+    return result
+    
+def permutations(l):
+    
+    if len(l) == 2:
+        result = []
+        result.append(l)
+        a = []
+        a.append(l[1])
+        a.append(l[0])
+        result.append(a)
+        return result
+        
+    else:
+        e = l[0]
+        l.remove(e)
+        per = permutations(l)
+        
+        def yieldins(per):
+            for j in per:
+                for q in insertelement(j, e):
+                    yield q
+                
+        return list(yieldins(per))
+
+
+def allotworkerandconcernoffdays(calendraft):
+    workerper = permutations(workers)
+    for q in workerper:
+        for w in calendraft:
+            allotcal = {e: q[w[e]] for e in w}
+            
+                
+    
+    
+allotworkerandconcernoffdays(calendraft)
+
+
+    
+
  
+""" 
 combimerge1 = list(combimerge(matchcombi1))
 combimerge2 = list(combimerge(matchcombi2))
 combimerge3 = list(combimerge(matchcombi3))
 
+ from now, merge the divided calender 
+
+mergedcalen = {"A":combimerge1, "B":combimerge2, "C":combimerge3}
+
+
+finalcalentemp = list(combimerge(mergedcalen))
+calendraft = []
+for e in finalcalentemp:
+   
+    calendraft.append(dict(sorted(e.items())))
+print(calendraft)    
+
+
+
+"""
+"""
 
 def insertelement(l, e):
     result = []
@@ -395,20 +507,7 @@ def finalcalen(combimerge):
 finalcalen1 = list(finalcalen(combimerge1))
 finalcalen2 = list(finalcalen(combimerge2))
 finalcalen3 = list(finalcalen(combimerge3)) 
-
-
-""" from now, merge the divided calender """
-
-mergedcalen = {"A":finalcalen1, "B":finalcalen2, "C":finalcalen3}
-
-
-finalcalentemp = list(combimerge(mergedcalen))
-finalcalen = []
-for e in finalcalentemp:
-    finalcalen.append(dict(sorted(e.items())))
-print(finalcalen)    
-
-
+"""
 
 """
 
@@ -453,7 +552,7 @@ calencombi2 = matchdays(calen2, combinations2, workerbyduties2)"""
 """mandatory modification points
 ***do not pre decide 토주, 일주, yet decide it last which best fits***""" 
     
-    
+
     
     
     
