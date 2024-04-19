@@ -377,22 +377,39 @@ def permutations(l):
         return list(yieldins(per))
 
 
-
 def finalcalen(combimerge):
-    
   
     for w in permutations(workers):
+        match = [w[n] for n in range(len(w))]
         for e in combimerge:
-            match = {n : w[n] for n in range(len(workers))}
-            element = {k : match[e[k]] for k in e}
+            element = {}
+            for k in e:
+                for a in range(len(match)):
+                    if a == k: 
+                        element[k] = match[a]
+                        break
+                    else: continue
             yield(element)    
        
         
 finalcalen1 = list(finalcalen(combimerge1))
 finalcalen2 = list(finalcalen(combimerge2))
 finalcalen3 = list(finalcalen(combimerge3)) 
-print(finalcalen1)
-    
+
+
+""" from now, merge the divided calender """
+
+mergedcalen = {"A":finalcalen1, "B":finalcalen2, "C":finalcalen3}
+
+
+finalcalentemp = list(combimerge(mergedcalen))
+finalcalen = []
+for e in finalcalentemp:
+    finalcalen.append(dict(sorted(e.items())))
+print(finalcalen)    
+
+
+
 """
 
 
