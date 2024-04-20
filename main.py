@@ -1,3 +1,4 @@
+from typing_extensions import ParamSpecArgs
 import calendar
 import datetime
 from collections import defaultdict
@@ -16,13 +17,13 @@ datelist[1] = datelist[1]
 datetime_date = datetime.date(int(datelist[0]), int(datelist[1]), 1)
 firstdayofweek = datetime_date.weekday()
 monthrange = calendar.monthrange(int(datelist[0]), int(datelist[1]))[1]
-"""get monthrange and day of week of the first day of month""" 
+"""get monthrange and day of week of the first day of month"""
 
 print("Enter the holidays: day1, day2, ... ex)4,5,6,15,29")
 holidays = input()
 holidays = holidays.replace(" ","").split(",")
 if holidays[0] != '':
-    for i in range(len(holidays)): 
+    for i in range(len(holidays)):
         holidays[i] = int(holidays[i])
 """get holidays for the month"""
 
@@ -44,11 +45,11 @@ for i in range(monthrange):
         calen.append([i+1, firstdayofweek, "토"])
     else:
         calen.append([i+1, firstdayofweek, "일"])
-    
+
     if firstdayofweek < 6:
         firstdayofweek += 1
     else : firstdayofweek = 0
-    
+
 
 for i in holidays:
     for c in range(len(calen)):
@@ -61,7 +62,7 @@ for i in range(len(calen)):
         if yesteroff == True: calen[i][1] = 6
         yesteroff = True
     else: yesteroff = False
-'''modify the type of the holiays'''    
+'''modify the type of the holiays'''
 
 for i in range(len(calen)):
     if  calen[i][1] <= 3:
@@ -86,31 +87,31 @@ dayoffs = input()
 
 def processdayoff(dayoffs):
     temp = dayoffs.replace(" ", '')
-    
+
     workerindex = []
     for q in workers:
         if temp.find(q) == -1: continue
         else:
             workerindex.append(temp.find(q))
-    
+
     resultdraft = []
     previous = len(temp) + 1
     for e in reversed(range(len(workerindex))):
         resultdraft.append(temp[workerindex[e]:previous])
         previous = workerindex[e]
-    
+
 
     resultdraft2 = {}
     for r in resultdraft:
         resultdraft2[r.split(':')[0]] = r.split(':')[1]
-        
+
     for t in resultdraft2:
         resultdraft2[t] = resultdraft2[t].replace('/', '').split(',')
         for y in resultdraft2[t]:
             if y == '': resultdraft2[t].remove('')
-    
+
     resultdraft3 = {}
-    
+
     for u in resultdraft2:
         resultdraft3[u] = []
         for i in range(len(resultdraft2[u])):
@@ -119,20 +120,20 @@ def processdayoff(dayoffs):
                 for p in range(int(o[0]), int(o[1])+1):
                     resultdraft3[u].append(p)
             else: resultdraft3[u].append(int(resultdraft2[u][i]))
-    
+
     for a in workers:
         if a not in resultdraft3.keys():
-            resultdraft3[a] = [] 
-    
-    
+            resultdraft3[a] = []
+
+
     return resultdraft3
 
-    
+
 dayoffs = processdayoff(dayoffs)
 
 """process the dayoffs input()"""
-        
-        
+
+
 weights = {}
 weights["평야"] = 1
 weights["금야"] = 1.8
@@ -157,7 +158,7 @@ monthlyduties = []
 for i in range(PIECES):
   monthlyduties.append([c[0] for c in [i[3] for i in calens[i]]])
 
-    
+
 def dutysort(e):
     return weights[e]
 
@@ -167,7 +168,7 @@ for i in range(PIECES):
 """get and sort montly services"""
 
 def dutygroups(monthlyduties):
-    dutygroups = {} 
+    dutygroups = {}
     for i in range(len(workers)): dutygroups[i] = []
 
 
@@ -175,7 +176,7 @@ def dutygroups(monthlyduties):
         return len(dutygroups[e])
 
 
-    for i in monthlyduties: 
+    for i in monthlyduties:
         groupweights = {}
         sums = {}
         for w in dutygroups:
@@ -183,15 +184,15 @@ def dutygroups(monthlyduties):
             for c in dutygroups[w]:
                 d.append(weights[c])
             groupweights[w] = d
-    
-  
+
+
         for a in groupweights:
             sums[a] = sum(groupweights[a])
-        
+
         finkeys = list(dict(sorted(sums.items(), key = lambda a: a[1])))
-    
+
         dutygroups[finkeys[0]].append(i)
-    
+
     return dutygroups
 
 dutygroups = [dutygroups(m) for m in monthlyduties]
@@ -210,9 +211,9 @@ def workerbyduties(dutygroups):
                 else: pass
     return workerbyduties
 
-workerbyduties = [workerbyduties(d) for d in dutygroups]    
+workerbyduties = [workerbyduties(d) for d in dutygroups]
 
-def daybyduties(calen):    
+def daybyduties(calen):
     daybyduties = {}
     for i in dutytypes:
         daybyduties[i] = []
@@ -225,8 +226,8 @@ def daybyduties(calen):
                     break
                 else: pass
     return daybyduties
-    
-daybyduties = [daybyduties(c) for c in calens]    
+
+daybyduties = [daybyduties(c) for c in calens]
 
 def combinelists(a, b):
     result = []
@@ -250,19 +251,19 @@ def makecombinations(ll, r):
         for j in range(i+1, r):
             indices[j] = indices[j-1] + 1
         yield [ll[i] for i in indices]
-        
-    
+
+
 
 def combination(workerbyduties, daybyduties):
     result = {}
 
     for i in workerbyduties:
-        
+
         workercnt = defaultdict(int)
         for c in workerbyduties[i]:
-            workercnt[c] += 1 
+            workercnt[c] += 1
         workercnt = dict(workercnt)
-        pegs = []      
+        pegs = []
         for q in workercnt:
             subjects = []
             if pegs == []:
@@ -271,31 +272,31 @@ def combination(workerbyduties, daybyduties):
             else:
                 for u in pegs:
                     subjects.append([f for f in daybyduties[i] if f not in u])
-        
+
                 def elements2():
                     for p in range(len(subjects)):
                         combi = list(makecombinations(subjects[p], workercnt[q]))
                         for o in combinelists(pegs[p], combi): yield(o)
-            
+
                 pegs = list(elements2())
-            
-        result[i] = pegs  
-    
+
+        result[i] = pegs
+
     result3 = {}
     for q in dutytypes:
         index = range(len(workerbyduties[q]))
         result3[q] = []
-       
+
         for r in result[q]:
             result2 = {}
             for e in index:
                 result2[r[e]] = workerbyduties[q][e]
-        
+
             result3[q].append(result2)
-    
+
     return result3
 
-combinations = [combination(workerbyduties[i], daybyduties[i]) for i in range(PIECES)]    
+combinations = [combination(workerbyduties[i], daybyduties[i]) for i in range(PIECES)]
 
 
 '''from now, merge the divided calender'''
@@ -314,62 +315,60 @@ def combimerge(groups):
     first = {}
     for d in groups:
         first.update(groups[d][0])
-        
+
     yield first
-    
+
     while True:
-  
+
         for d in indices:
             if indices[d] < len(groups[d]) - 1 : break
         else: return
-    
+
         for d in indices:
-           
+
             if indices[d] < len(groups[d]) - 1:
                 indices[d] += 1
                 break
-            else: 
+            else:
                 indices[d] = 0
-                                
+
         merged = {}
-        
+
         for d in indices:
             merged.update(groups[d][indices[d]])
-        
-        yield merged    
+
+        yield merged
 '''combine elements of groups to make schedule cases'''
 
-               
+
 def sortandtest(merged):
   sortedcal = dict(sorted(merged.items()))
   previous = -1
   for q in sortedcal:
-    if sortedcal[q] == previous: return {}
+    if sortedcal[q] == previous: return
     previous = sortedcal[q]
   else:
-    return sortedcal         
+    return sortedcal
 '''filter1'''
 
-def evaluatescore(merged):
-  workingdays = {}
-  for q in range(len(workers)):
-    workingdays[q] = []
+def evaluatescore(calen):
 
-  for w in merged:
-    workingdays[merged[w]].append(w)
-
+  workingdays = defaultdict(list)
+  for q in calen:
+    workingdays[calen[q]].append(q)
+  workingdays = dict(workingdays)
   gaps = []
   for e in workingdays:
     for r in range(len(workingdays[e])-1):
-      gaps.append(workingdays[e][r+1] - workingdays[e][r]) 
-  
+      gaps.append(workingdays[e][r+1] - workingdays[e][r])
+
   score = 0
   for t in gaps:
     score += np.log(t)
 
   return score
 
-'''filter2''' 
+'''filter2'''
 
 def insertelement(l, e):
     result = []
@@ -379,9 +378,9 @@ def insertelement(l, e):
         element = first + [e] + second
         result.append(element)
     return result
-    
+
 def permutations(l):
-    
+
     if len(l) == 2:
         result = []
         result.append(l)
@@ -390,52 +389,58 @@ def permutations(l):
         a.append(l[0])
         result.append(a)
         return result
-        
+
     else:
         e = l[0]
         l.remove(e)
         per = permutations(l)
-        
+
         def yieldins(per):
             for j in per:
                 for q in insertelement(j, e):
                     yield q
-                
+
         return list(yieldins(per))
 
 
-def allotworkerandconcernoffdays(calen):
+def allotworkerandconcernoffdays(merged):
+  if merged != None:
     workerper = permutations(workers)
     for q in workerper:
-      allotedcal = calen
-      for w in calen:
-        allotedcal[w] = q[calen[w]]
-            
+      allotedcal = merged
+      for w in merged:
+        allotedcal[w] = q[int(merged[w])]
+
       for e in allotedcal:
-        if e in dayoffs[allotedcal[e]]: yield from []
-      else: yield allotedcal    
-    
+        if e in dayoffs[allotedcal[e]]: yield 
+      else: yield allotedcal
+  else: yield 
+
 def makefinalcases(mergedgen):
   score = 0
   result = []
   for merged in mergedgen:
     result2 = sortandtest(merged)
-    if score < evaluatescore(result2): 
-      result.clear()
-      result.append(result2)
-    elif score == evaluatescore(result2):
-      result.append(result2)
-    else: pass
+    for g in allotworkerandconcernoffdays(result2):
+      if g != None:
+        if score < evaluatescore(g):
+          result.clear()
+          result.append(g)
+        elif score == evaluatescore(g):
+          result.append(g)
+        else: pass
+      else:pass
+      
   return result
 
 finalcases = makefinalcases(combimerge(groups))
+print(finalcases)
 
-   
-       
 
-"""group monthly duties for the weight sums of each group to be similar. Using greedy allocation"""        
-        
-        
+
+"""group monthly duties for the weight sums of each group to be similar. Using greedy allocation"""
+
+
 
 """get vacations, dayoffs for workers"""
 
@@ -444,25 +449,23 @@ finalcases = makefinalcases(combimerge(groups))
 """regression process"""
 
 """1. make calendars regarding to weights.
-     allot specific weights to each duty types, 
+     allot specific weights to each duty types,
      and group duties for each workers concerning the vacations, and dayoffs
     2. test the calenders built from the previous step by work counts, and distance between days of work
        alloted to each workers.
     3. evaluate the final schedule
     """
-    
-"""final schedule"""
-    
-    
-""" optional modification point 1: set dutytypes
-    2 : set restrictions for each workers according to offdays 
-        
-    3. use switch"""
-    
-"""mandatory modification points
-***do not pre decide 토주, 일주, yet decide it last which best fits***""" 
-    
 
-    
-    
-    
+"""final schedule"""
+
+
+""" optional modification point 1: set dutytypes
+    2 : set restrictions for each workers according to offdays
+
+
+mandatory modification points
+***do not pre decide 토주, 일주, yet decide it last which best fits***"""
+
+
+
+
