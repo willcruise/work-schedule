@@ -406,7 +406,7 @@ def allotworkerandconcernoffdays(calendraft):
 finalcases = list(allotworkerandconcernoffdays(calendraft))
 print(cnt)
 print(len(finalcases))
-
+'''
 def evaluatecases(finalcases):
     
     workdays = {}
@@ -421,7 +421,7 @@ def evaluatecases(finalcases):
     
     
 evaluatecases(finalcases)
-        
+ '''       
 
    
 
