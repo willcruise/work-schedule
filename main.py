@@ -421,7 +421,7 @@ def makefinalcases(mergedgen):
   for merged in mergedgen:
     result2 = sortandtest(merged)
     if score < evaluatescore(result2): 
-      result.remove()
+      result.clear()
       result.append(result2)
     elif score == evaluatescore(result2):
       result.append(result2)
@@ -430,29 +430,7 @@ def makefinalcases(mergedgen):
 
 finalcases = makefinalcases(combimerge(groups))
 
-
-
-'''
-def evaluatecases(finalcases):
-    
-    workdays = {}
-    for w in workers:
-        workdays[w] = []
-        
-    for q in finalcases:
-        for e in q:
-            workdays[q[e]].append(e)
-            
-    print(workdays)
-    
-    
-evaluatecases(finalcases)
- '''       
-
    
-
-
-    
        
 
 """group monthly duties for the weight sums of each group to be similar. Using greedy allocation"""        
