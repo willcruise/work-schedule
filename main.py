@@ -130,7 +130,7 @@ def processdayoff(dayoffs):
 
     
 dayoffs = processdayoff(dayoffs)
-print(dayoffs)
+
 
 """configure dayoffs"""
         
@@ -405,7 +405,8 @@ def permutations(l):
 
 def allotworkerandconcernoffdays(calendraft):
     workerper = permutations(workers)
-    global cnt = 0
+    global cnt
+    cnt = 0
     for q in workerper:
         for w in calendraft:
             allotedcal = {e: q[w[e]] for e in w}
