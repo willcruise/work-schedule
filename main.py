@@ -2,7 +2,7 @@ import calendar
 import datetime
 from collections import defaultdict
 import itertools
-
+import numpy as np
 
 
 print("Enter year and month: year-month ex)2024-3")
@@ -308,52 +308,68 @@ for q in combinations:
         groups[cnt] = q[w]
         cnt += 1
 
-def sortandtest(merged):
-    sortedcal = dict(sorted(merged.items()))
-    previous = -1
-    for q in sortedcal:
-        if sortedcal[q] == previous: return
-        previous = sortedcal[q]
-    else:
-        return sortedcal
-        
 
-def combimerge(combinations):
-    indices = {d: 0 for d in combinations}
+def combimerge(groups):
+    indices = {d: 0 for d in groups}
     first = {}
-    for d in combinations:
-        first.update(combinations[d][0])
+    for d in groups:
+        first.update(groups[d][0])
         
-    if sortandtest(first) == None:
-        yield from []
-    else : yield sortandtest(first)
+    yield sortandtest(first)
     
     while True:
   
         for d in indices:
-            if indices[d] < len(combinations[d]) - 1 : break
+            if indices[d] < len(groups[d]) - 1 : break
         else: return
     
         for d in indices:
            
-            if indices[d] < len(combinations[d]) - 1:
+            if indices[d] < len(groups[d]) - 1:
                 indices[d] += 1
                 break
             else: 
                 indices[d] = 0
                                 
         merged = {}
+        previousscore = -1
         for d in indices:
-            merged.update(combinations[d][indices[d]])
-            
-        if sortandtest(merged) == None:
-            yield from []
-        else: yield sortandtest(merged)            
+            merged.update(groups[d][indices[d]])
+        
+        yield merged    
+'''combine elements of groups to make schedule cases'''
 
+               
+def sortandtest(merged):
+  sortedcal = dict(sorted(merged.items()))
+  previous = -1
+  for q in sortedcal:
+    if sortedcal[q] == previous: yield from []
+    previous = sortedcal[q]
+  else:
+    yield sortedcal         
+'''filter1'''
 
-calendraft = list(combimerge(groups))
+def evaluatescore(merged):
+  workingdays = {}
+  for q in range(len(workers)):
+    workingdays[q] = []
 
-print(len(calendraft))
+  for w in merged:
+    workingdays[merged[w]].append(w)
+
+  gaps = []
+  for e in workingdays:
+    for r in range(len(workingdays[e])-1):
+      gaps.append(workingdays[e][r+1] - workingdays[e][r]) 
+  
+  score = 0
+  for t in gaps:
+    score += np.log(t)
+
+  yield score
+
+'''filter2''' 
 
 def insertelement(l, e):
     result = []
@@ -388,24 +404,36 @@ def permutations(l):
         return list(yieldins(per))
 
 
-def allotworkerandconcernoffdays(calendraft):
+def allotworkerandconcernoffdays(calen):
     workerper = permutations(workers)
-    global cnt
-    cnt = 0
     for q in workerper:
-        for w in calendraft:
-            allotedcal = {e: q[w[e]] for e in w}
+      allotedcal = calen
+      for w in calen:
+        allotedcal[w] = q[calen[w]]
             
-            for e in allotedcal:
-                if e in dayoffs[allotedcal[e]]:
-                    cnt +=1
-                    yield from []
-            else: yield allotedcal    
+      for e in allotedcal:
+        if e in dayoffs[allotedcal[e]]: yield from []
+      else: yield allotedcal    
     
-    
-finalcases = list(allotworkerandconcernoffdays(calendraft))
-print(cnt)
-print(len(finalcases))
+def makefinalcases(mergedgen):
+  score = 0
+  result = []
+  for merged in mergedgen:
+    result2 = sortandtest(merged)
+    if score < evaluatescore(result2): 
+      result.remove()
+      result.append(result2)
+    elif score == evaluatescore(result2):
+      result.append(result2)
+    else: pass
+  return result
+
+
+
+finalcases = makefinalcases(combimerge(groups))
+
+
+
 '''
 def evaluatecases(finalcases):
     
