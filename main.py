@@ -315,7 +315,7 @@ def combimerge(groups):
     for d in groups:
         first.update(groups[d][0])
         
-    yield sortandtest(first)
+    yield first
     
     while True:
   
@@ -332,7 +332,7 @@ def combimerge(groups):
                 indices[d] = 0
                                 
         merged = {}
-        previousscore = -1
+        
         for d in indices:
             merged.update(groups[d][indices[d]])
         
@@ -344,10 +344,10 @@ def sortandtest(merged):
   sortedcal = dict(sorted(merged.items()))
   previous = -1
   for q in sortedcal:
-    if sortedcal[q] == previous: yield from []
+    if sortedcal[q] == previous: return {}
     previous = sortedcal[q]
   else:
-    yield sortedcal         
+    return sortedcal         
 '''filter1'''
 
 def evaluatescore(merged):
@@ -367,7 +367,7 @@ def evaluatescore(merged):
   for t in gaps:
     score += np.log(t)
 
-  yield score
+  return score
 
 '''filter2''' 
 
@@ -427,8 +427,6 @@ def makefinalcases(mergedgen):
       result.append(result2)
     else: pass
   return result
-
-
 
 finalcases = makefinalcases(combimerge(groups))
 
