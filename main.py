@@ -61,7 +61,7 @@ for i in range(len(calen)):
         if yesteroff == True: calen[i][1] = 6
         yesteroff = True
     else: yesteroff = False
-    
+'''modify the type of the holiays'''    
 
 for i in range(len(calen)):
     if  calen[i][1] <= 3:
@@ -73,8 +73,7 @@ for i in range(len(calen)):
     elif calen[i][1] == 6:
         calen[i].append(["일야"])
 
-
-"""get the calender for the month of the schedule"""
+"""until now, got the calender for the month of the schedule"""
 
 print("Enter the workers: name1, name2, ...")
 workers = input()
@@ -131,8 +130,7 @@ def processdayoff(dayoffs):
     
 dayoffs = processdayoff(dayoffs)
 
-
-"""configure dayoffs"""
+"""process the dayoffs input()"""
         
         
 weights = {}
@@ -144,32 +142,28 @@ weights["일야"] = 0.7
 
 dutytypes = ["평야", "금야", "토야", "일야"]
 
-PIECES = 4
+
+print("How many PIECES?")
+PIECES = int(input())
 
 
-calen1 = [calen[i] for i in range(len(calen)//3)]  
-calen2 = [calen[i] for i in range(len(calen)//3, len(calen)*2//3)]
-calen3 = [calen[i] for i in range(len(calen)*2//3, len(calen))]
-calen4 = [calen[i] for i in range(len(calen)*2//3, len(calen))]
- 
+calens = []
+for i in range(PIECES):
+  if i == 0:
+    calens.append([calen[i] for i in range(len(calen)//PIECES)])
+  else: calens.append([calen[i] for i in range(len(calen)*i//PIECES, len(calen)*(i+1)//PIECES)])
 
-monthlyduties1 = []
-monthlyduties2 = []
-monthlyduties3 = []
-monthlyduties4 = []
+monthlyduties = []
+for i in range(PIECES):
+  monthlyduties.append([c[0] for c in [i[3] for i in calens[i]]])
 
-monthlyduties1 = [c[0] for c in [i[3] for i in calen1]]
-monthlyduties2 = [c[0] for c in [i[3] for i in calen2]]
-monthlyduties3 = [c[0] for c in [i[3] for i in calen3]]
-monthlyduties4 = [c[0] for c in [i[3] for i in calen4]]
     
 def dutysort(e):
     return weights[e]
 
-monthlyduties1.sort(reverse = True, key = dutysort)
-monthlyduties2.sort(reverse = True, key = dutysort)
-monthlyduties3.sort(reverse = True, key = dutysort)
-monthlyduties4.sort(reverse = True, key = dutysort)
+for i in range(PIECES):
+  monthlyduties[i].sort(reverse = True, key = dutysort)
+
 """get and sort montly services"""
 
 def dutygroups(monthlyduties):
@@ -200,10 +194,7 @@ def dutygroups(monthlyduties):
     
     return dutygroups
 
-dutygroups1 = dutygroups(monthlyduties1)
-dutygroups2 = dutygroups(monthlyduties2)
-dutygroups3 = dutygroups(monthlyduties3)
-dutygroups4 = dutygroups(monthlyduties4)
+dutygroups = [dutygroups(m) for m in monthlyduties]
 
 def workerbyduties(dutygroups):
     workerbyduties = {}
@@ -218,11 +209,8 @@ def workerbyduties(dutygroups):
                     break
                 else: pass
     return workerbyduties
-    
-workerbyduties1 = workerbyduties(dutygroups1)
-workerbyduties2 = workerbyduties(dutygroups2)
-workerbyduties3 = workerbyduties(dutygroups3)
-workerbyduties4 = workerbyduties(dutygroups4)
+
+workerbyduties = [workerbyduties(d) for d in dutygroups]    
 
 def daybyduties(calen):    
     daybyduties = {}
@@ -238,10 +226,7 @@ def daybyduties(calen):
                 else: pass
     return daybyduties
     
-daybyduties1 = daybyduties(calen1)
-daybyduties2 = daybyduties(calen2)
-daybyduties3 = daybyduties(calen3)
-daybyduties4 = daybyduties(calen4)
+daybyduties = [daybyduties(c) for c in calens]    
 
 def combinelists(a, b):
     result = []
@@ -268,7 +253,7 @@ def makecombinations(ll, r):
         
     
 
-def combinations(workerbyduties, daybyduties):
+def combination(workerbyduties, daybyduties):
     result = {}
 
     for i in workerbyduties:
@@ -309,20 +294,16 @@ def combinations(workerbyduties, daybyduties):
             result3[q].append(result2)
     
     return result3
-    
-combinations1 = combinations(workerbyduties1, daybyduties1)
-combinations2 = combinations(workerbyduties2, daybyduties2)
-combinations3 = combinations(workerbyduties3, daybyduties3)
-combinations4 = combinations(workerbyduties4, daybyduties4)
+
+combinations = [combination(workerbyduties[i], daybyduties[i]) for i in range(PIECES)]    
 
 
 '''from now, merge the divided calender'''
 
-matchcombi = [combinations1, combinations2, combinations3]
 
 groups = {}
 cnt = 0
-for q in matchcombi:
+for q in combinations:
     for w in q:
         groups[cnt] = q[w]
         cnt += 1
