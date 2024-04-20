@@ -388,7 +388,7 @@ def permutations(l):
         return list(yieldins(per))
 
 
-def allotworkerandconcernoffdaysandevaluate(calendraft):
+def allotworkerandconcernoffdays(calendraft):
     workerper = permutations(workers)
     global cnt
     cnt = 0
