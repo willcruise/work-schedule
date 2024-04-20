@@ -410,7 +410,7 @@ def allotworkerandconcernoffdays(calendraft):
     for q in workerper:
         for w in calendraft:
             allotedcal = {e: q[w[e]] for e in w}
-            print(allotedcal)
+            
             for e in allotedcal:
                 if e in dayoffs[allotedcal[e]]:
                     cnt +=1
@@ -421,6 +421,8 @@ def allotworkerandconcernoffdays(calendraft):
 finalcases = list(allotworkerandconcernoffdays(calendraft))
 print(cnt)
 print(len(finalcases))
+
+
     
 
  
