@@ -93,8 +93,7 @@ def processdayoff(dayoffs):
         for w in range(len(temp)):
             if temp[w] == q: workerindex.append(w)
             
-    print(workerindex)    
-    
+
     resultdraft = []
     previous = len(temp) + 1
     for e in reversed(range(len(workerindex))):
@@ -110,74 +109,25 @@ def processdayoff(dayoffs):
         for y in resultdraft2[t]:
             if y == '': resultdraft2[t].remove('')
     
+
+    resultdraft3 = {}
+    
     for u in resultdraft2:
-        for i in u:
+        resultdraft3[u] = []
+        for i in range(len(resultdraft2[u])):
+            if '~' in resultdraft2[u][i]:
+                o = resultdraft2[u][i].split('~')
+                for p in range(int(o[0]), int(o[1])+1):
+                    resultdraft3[u].append(p)
+            else: resultdraft3[u].append(int(resultdraft2[u][i]))
     
-    print(resultdraft2)    
+
+    return resultdraft3
+
+    
+dayoffs = processdayoff(dayoffs)
+"""configure dayoffs"""
         
-    '''    
-    
-    for r in range(len(resultdraft)):
-        if r%2 == 0:
-            divided = resultdraft[r].split(",")
-            resultdraft[r] = divided
-        else: pass'''
-       
-   
-    
-processdayoff(dayoffs)
-       
-        
-"""
-
-dayoffs = processdayoffs(dayoffs)
-    
-dayoffs = dayoffss.replace(" ", "")
-dayoffs = {}
-if dayoffss != '':
-    index = []
-    for i in workers:
-        index.append(dayoffss.find(i))
-    
-    rem = []
-    for i in index:
-        if -1 < i : pass
-        else: rem.append(index.index(i))
-    for i in rem: index.pop(i)
-
-    
-    dayoffs_ = []
-    for i in range(len(index)-1):
-        dayoffs_.append(dayoffss[index[i]:index[i+1]])
-    dayoffs_.append(dayoffss[index[len(index)-1]:])
-    
-    
-    for i in dayoffs_:
-        a = i.split(":")
-        dayoffs[a[0]] = a[1]
-       
-for i in dayoffs:
-    dayoffs[i] = dayoffs[i].split(",")
-    if '' in dayoffs[i]: 
-        dayoffs[i].remove('')
-
-
-
-for i in dayoffs:
-    v = []
-    for c in dayoffs[i]:
-        if '~' in c:
-            a = c.split('~')
-            for y in range(int(a[0]),int(a[1])+1):
-                v.append(y)
-        else: v.append(int(c))
-    dayoffs[i] = v
-    
-print(dayoffs)
-    
-    """
-    
-"""modify dayoffs"""
         
 weights = {}
 weights["평야"] = 1
@@ -452,7 +402,7 @@ def permutations(l):
                 
         return list(yieldins(per))
 
-
+'''
 def allotworkerandconcernoffdays(calendraft):
     workerper = permutations(workers)
     for q in workerper:
@@ -464,7 +414,7 @@ def allotworkerandconcernoffdays(calendraft):
     
 allotworkerandconcernoffdays(calendraft)
 
-
+'''
     
 
  
