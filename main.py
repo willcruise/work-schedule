@@ -388,7 +388,7 @@ def permutations(l):
         return list(yieldins(per))
 
 
-def allotworkerandconcernoffdays(calendraft):
+def allotworkerandconcernoffdaysandevaluate(calendraft):
     workerper = permutations(workers)
     global cnt
     cnt = 0
@@ -423,93 +423,7 @@ def evaluatecases(finalcases):
 evaluatecases(finalcases)
         
 
-    
-
- 
-""" 
-combimerge1 = list(combimerge(matchcombi1))
-combimerge2 = list(combimerge(matchcombi2))
-combimerge3 = list(combimerge(matchcombi3))
-
- from now, merge the divided calender 
-
-mergedcalen = {"A":combimerge1, "B":combimerge2, "C":combimerge3}
-
-
-finalcalentemp = list(combimerge(mergedcalen))
-calendraft = []
-for e in finalcalentemp:
    
-    calendraft.append(dict(sorted(e.items())))
-print(calendraft)    
-
-
-
-"""
-"""
-
-def insertelement(l, e):
-    result = []
-    for i in range(len(l) + 1):
-        first = l[:i]
-        second = l[i:]
-        element = first + [e] + second
-        result.append(element)
-    return result
-    
-def permutations(l):
-    
-    if len(l) == 2:
-        result = []
-        result.append(l)
-        a = []
-        a.append(l[1])
-        a.append(l[0])
-        result.append(a)
-        return result
-        
-    else:
-        e = l[0]
-        l.remove(e)
-        per = permutations(l)
-        
-        def yieldins(per):
-            for j in per:
-                for q in insertelement(j, e):
-                    yield q
-                
-        return list(yieldins(per))
-
-
-def finalcalen(combimerge):
-  
-    for w in permutations(workers):
-        match = [w[n] for n in range(len(w))]
-        for e in combimerge:
-            element = {}
-            for k in e:
-                for a in range(len(match)):
-                    if a == k: 
-                        element[k] = match[a]
-                        break
-                    else: continue
-            yield(element)    
-       
-        
-finalcalen1 = list(finalcalen(combimerge1))
-finalcalen2 = list(finalcalen(combimerge2))
-finalcalen3 = list(finalcalen(combimerge3)) 
-"""
-
-"""
-
-
-
-def excludeoff(finalmatch):pass
-  
-
-
-calencombi2 = matchdays(calen2, combinations2, workerbyduties2)"""
 
 
     
