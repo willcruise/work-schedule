@@ -73,7 +73,7 @@ for i in range(len(calen)):
     elif calen[i][1] == 6:
         calen[i].append(["일야"])
 
-print(calen)
+
 """get the calender for the month of the schedule"""
 
 print("Enter the workers: name1, name2, ...")
@@ -90,26 +90,26 @@ def processdayoff(dayoffs):
     
     workerindex = []
     for q in workers:
-        for w in range(len(temp)):
-            if temp[w] == q: workerindex.append(w)
-            
-
+        if temp.find(q) == -1: continue
+        else:
+            workerindex.append(temp.find(q))
+    
     resultdraft = []
     previous = len(temp) + 1
     for e in reversed(range(len(workerindex))):
         resultdraft.append(temp[workerindex[e]:previous])
         previous = workerindex[e]
     
+
     resultdraft2 = {}
     for r in resultdraft:
-        resultdraft2[r[0]] = r[1:]
+        resultdraft2[r.split(':')[0]] = r.split(':')[1]
         
     for t in resultdraft2:
-        resultdraft2[t] = resultdraft2[t].replace(':', '').split(',')
+        resultdraft2[t] = resultdraft2[t].replace('/', '').split(',')
         for y in resultdraft2[t]:
             if y == '': resultdraft2[t].remove('')
     
-
     resultdraft3 = {}
     
     for u in resultdraft2:
@@ -121,11 +121,17 @@ def processdayoff(dayoffs):
                     resultdraft3[u].append(p)
             else: resultdraft3[u].append(int(resultdraft2[u][i]))
     
-
+    for a in workers:
+        if a not in resultdraft3.keys():
+            resultdraft3[a] = [] 
+    
+    
     return resultdraft3
 
     
 dayoffs = processdayoff(dayoffs)
+print(dayoffs)
+
 """configure dayoffs"""
         
         
@@ -142,9 +148,7 @@ calen1 = [calen[i] for i in range(len(calen)//3)]
 calen2 = [calen[i] for i in range(len(calen)//3, len(calen)*2//3)]
 calen3 = [calen[i] for i in range(len(calen)*2//3, len(calen))]
 
-print(calen1)
-print(calen2)
-print(calen3)    
+ 
 
 monthlyduties1 = []
 monthlyduties2 = []
@@ -212,9 +216,6 @@ workerbyduties1 = workerbyduties(dutygroups1)
 workerbyduties2 = workerbyduties(dutygroups2)
 workerbyduties3 = workerbyduties(dutygroups3)
 
-print(workerbyduties1)
-print(workerbyduties2)
-print(workerbyduties3)
 
 def daybyduties(calen):    
     daybyduties = {}
@@ -234,9 +235,6 @@ daybyduties1 = daybyduties(calen1)
 daybyduties2 = daybyduties(calen2)
 daybyduties3 = daybyduties(calen3)
 
-print(daybyduties1)
-print(daybyduties2)
-print(daybyduties3)
 
 def combinelists(a, b):
     result = []
@@ -370,6 +368,8 @@ def combimerge(matchcombi):
 
 calendraft = list(combimerge(groups))
 
+print(len(calendraft))
+
 def insertelement(l, e):
     result = []
     for i in range(len(l) + 1):
@@ -402,19 +402,24 @@ def permutations(l):
                 
         return list(yieldins(per))
 
-'''
+
 def allotworkerandconcernoffdays(calendraft):
     workerper = permutations(workers)
+    global cnt = 0
     for q in workerper:
         for w in calendraft:
-            allotcal = {e: q[w[e]] for e in w}
-            
-                
+            allotedcal = {e: q[w[e]] for e in w}
+            print(allotedcal)
+            for e in allotedcal:
+                if e in dayoffs[allotedcal[e]]:
+                    cnt +=1
+                    yield from []
+            else: yield allotedcal    
     
     
-allotworkerandconcernoffdays(calendraft)
-
-'''
+finalcases = list(allotworkerandconcernoffdays(calendraft))
+print(cnt)
+print(len(finalcases))
     
 
  
