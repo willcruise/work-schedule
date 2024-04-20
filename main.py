@@ -85,18 +85,50 @@ workers = workers.replace(" ","").split(",")
 print("Enter the dayoffs of workers; name1: day1 ~ day2, day3, name2: ...")
 dayoffs = input()
 
-def precessdayoff(dayoffs):
-    temp = dayoffs.replace(" ", "")
+def processdayoff(dayoffs):
+    temp = dayoffs.replace(" ", '')
     
     workerindex = []
     for q in workers:
         for w in range(len(temp)):
             if temp[w] == q: workerindex.append(w)
             
-    resultdraft = {}
-    for e in workerindex:
+    print(workerindex)    
+    
+    resultdraft = []
+    previous = len(temp) + 1
+    for e in reversed(range(len(workerindex))):
+        resultdraft.append(temp[workerindex[e]:previous])
+        previous = workerindex[e]
+    
+    resultdraft2 = {}
+    for r in resultdraft:
+        resultdraft2[r[0]] = r[1:]
         
-
+    for t in resultdraft2:
+        resultdraft2[t] = resultdraft2[t].replace(':', '').split(',')
+        for y in resultdraft2[t]:
+            if y == '': resultdraft2[t].remove('')
+    
+    for u in resultdraft2:
+        for i in u:
+    
+    print(resultdraft2)    
+        
+    '''    
+    
+    for r in range(len(resultdraft)):
+        if r%2 == 0:
+            divided = resultdraft[r].split(",")
+            resultdraft[r] = divided
+        else: pass'''
+       
+   
+    
+processdayoff(dayoffs)
+       
+        
+"""
 
 dayoffs = processdayoffs(dayoffs)
     
@@ -142,6 +174,8 @@ for i in dayoffs:
     dayoffs[i] = v
     
 print(dayoffs)
+    
+    """
     
 """modify dayoffs"""
         
