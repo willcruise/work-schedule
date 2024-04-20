@@ -146,10 +146,11 @@ dutytypes = ["평야", "금야", "토야", "일야"]
 
 PIECES = 4
 
-calen1 = [calen[i] for i in range(len(calen)//4)]  
-calen2 = [calen[i] for i in range(len(calen)//4, len(calen)*2//4)]
-calen3 = [calen[i] for i in range(len(calen)*2//4, len(calen)*3//4)]
-calen4 = [calen[i] for i in range(len(calen)*3//4, len(calen))]
+
+calen1 = [calen[i] for i in range(len(calen)//3)]  
+calen2 = [calen[i] for i in range(len(calen)//3, len(calen)*2//3)]
+calen3 = [calen[i] for i in range(len(calen)*2//3, len(calen))]
+calen4 = [calen[i] for i in range(len(calen)*2//3, len(calen))]
  
 
 monthlyduties1 = []
@@ -314,9 +315,10 @@ combinations2 = combinations(workerbyduties2, daybyduties2)
 combinations3 = combinations(workerbyduties3, daybyduties3)
 combinations4 = combinations(workerbyduties4, daybyduties4)
 
+
 '''from now, merge the divided calender'''
 
-matchcombi = [combinations1, combinations2, combinations3, combinations4]
+matchcombi = [combinations1, combinations2, combinations3]
 
 groups = {}
 cnt = 0
@@ -324,7 +326,6 @@ for q in matchcombi:
     for w in q:
         groups[cnt] = q[w]
         cnt += 1
-
 
 def sortandtest(merged):
     sortedcal = dict(sorted(merged.items()))
@@ -364,7 +365,8 @@ def combimerge(matchcombi):
         for d in indices:
             merged.update(matchcombi[d][indices[d]])
             
-        if sortandtest(merged) == None: yield from []
+        if sortandtest(merged) == None:
+            yield from []
         else: yield sortandtest(merged)            
 
 
