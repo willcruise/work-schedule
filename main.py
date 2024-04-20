@@ -144,19 +144,23 @@ weights["일야"] = 0.7
 
 dutytypes = ["평야", "금야", "토야", "일야"]
 
-calen1 = [calen[i] for i in range(len(calen)//3)]  
-calen2 = [calen[i] for i in range(len(calen)//3, len(calen)*2//3)]
-calen3 = [calen[i] for i in range(len(calen)*2//3, len(calen))]
+PIECES = 4
 
+calen1 = [calen[i] for i in range(len(calen)//4)]  
+calen2 = [calen[i] for i in range(len(calen)//4, len(calen)*2//4)]
+calen3 = [calen[i] for i in range(len(calen)*2//4, len(calen)*3//4)]
+calen4 = [calen[i] for i in range(len(calen)*3//4, len(calen))]
  
 
 monthlyduties1 = []
 monthlyduties2 = []
 monthlyduties3 = []
+monthlyduties4 = []
 
 monthlyduties1 = [c[0] for c in [i[3] for i in calen1]]
 monthlyduties2 = [c[0] for c in [i[3] for i in calen2]]
 monthlyduties3 = [c[0] for c in [i[3] for i in calen3]]
+monthlyduties4 = [c[0] for c in [i[3] for i in calen4]]
     
 def dutysort(e):
     return weights[e]
@@ -164,6 +168,7 @@ def dutysort(e):
 monthlyduties1.sort(reverse = True, key = dutysort)
 monthlyduties2.sort(reverse = True, key = dutysort)
 monthlyduties3.sort(reverse = True, key = dutysort)
+monthlyduties4.sort(reverse = True, key = dutysort)
 """get and sort montly services"""
 
 def dutygroups(monthlyduties):
@@ -197,6 +202,7 @@ def dutygroups(monthlyduties):
 dutygroups1 = dutygroups(monthlyduties1)
 dutygroups2 = dutygroups(monthlyduties2)
 dutygroups3 = dutygroups(monthlyduties3)
+dutygroups4 = dutygroups(monthlyduties4)
 
 def workerbyduties(dutygroups):
     workerbyduties = {}
@@ -215,7 +221,7 @@ def workerbyduties(dutygroups):
 workerbyduties1 = workerbyduties(dutygroups1)
 workerbyduties2 = workerbyduties(dutygroups2)
 workerbyduties3 = workerbyduties(dutygroups3)
-
+workerbyduties4 = workerbyduties(dutygroups4)
 
 def daybyduties(calen):    
     daybyduties = {}
@@ -234,7 +240,7 @@ def daybyduties(calen):
 daybyduties1 = daybyduties(calen1)
 daybyduties2 = daybyduties(calen2)
 daybyduties3 = daybyduties(calen3)
-
+daybyduties4 = daybyduties(calen4)
 
 def combinelists(a, b):
     result = []
@@ -289,32 +295,28 @@ def combinations(workerbyduties, daybyduties):
             
         result[i] = pegs  
     
-    return result
+    result3 = {}
+    for q in dutytypes:
+        index = range(len(workerbyduties[q]))
+        result3[q] = []
+       
+        for r in result[q]:
+            result2 = {}
+            for e in index:
+                result2[r[e]] = workerbyduties[q][e]
+        
+            result3[q].append(result2)
+    
+    return result3
     
 combinations1 = combinations(workerbyduties1, daybyduties1)
 combinations2 = combinations(workerbyduties2, daybyduties2)
 combinations3 = combinations(workerbyduties3, daybyduties3)
-
-def matchdays(combinations, workerbyduties):
-    
-    matchcombi1 = defaultdict(list)
-    for t in dutytypes:
-        for i in combinations[t]:
-            matchcombi2 = {}
-            for q in range(len(i)):
-                matchcombi2[i[q]] = workerbyduties[t][q]
-            matchcombi1[t].append(matchcombi2)        
-        
-    return dict(matchcombi1)
-            
-
-matchcombi1 = matchdays(combinations1, workerbyduties1)
-matchcombi2 = matchdays(combinations2, workerbyduties2)
-matchcombi3 = matchdays(combinations3, workerbyduties3)
+combinations4 = combinations(workerbyduties4, daybyduties4)
 
 '''from now, merge the divided calender'''
 
-matchcombi = [matchcombi1, matchcombi2, matchcombi3]
+matchcombi = [combinations1, combinations2, combinations3, combinations4]
 
 groups = {}
 cnt = 0
@@ -422,6 +424,21 @@ finalcases = list(allotworkerandconcernoffdays(calendraft))
 print(cnt)
 print(len(finalcases))
 
+def evaluatecases(finalcases):
+    
+    workdays = {}
+    for w in workers:
+        workdays[w] = []
+        
+    for q in finalcases:
+        for e in q:
+            workdays[q[e]].append(e)
+            
+    print(workdays)
+    
+    
+evaluatecases(finalcases)
+        
 
     
 
