@@ -318,11 +318,11 @@ def sortandtest(merged):
         return sortedcal
         
 
-def combimerge(matchcombi):
-    indices = {d: 0 for d in matchcombi}
+def combimerge(combinations):
+    indices = {d: 0 for d in combinations}
     first = {}
-    for d in matchcombi:
-        first.update(matchcombi[d][0])
+    for d in combinations:
+        first.update(combinations[d][0])
         
     if sortandtest(first) == None:
         yield from []
@@ -331,12 +331,12 @@ def combimerge(matchcombi):
     while True:
   
         for d in indices:
-            if indices[d] < len(matchcombi[d]) - 1 : break
+            if indices[d] < len(combinations[d]) - 1 : break
         else: return
     
         for d in indices:
            
-            if indices[d] < len(matchcombi[d]) - 1:
+            if indices[d] < len(combinations[d]) - 1:
                 indices[d] += 1
                 break
             else: 
@@ -344,7 +344,7 @@ def combimerge(matchcombi):
                                 
         merged = {}
         for d in indices:
-            merged.update(matchcombi[d][indices[d]])
+            merged.update(combinations[d][indices[d]])
             
         if sortandtest(merged) == None:
             yield from []
