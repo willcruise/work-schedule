@@ -386,8 +386,10 @@ def allotworkerandconcernoffdays(merged):
 def schedulelog(case):
   result : Dict[str,dict] = {}
   resulttemp : Dict[str,list] = {}
+  for a in workers:
+    resulttemp[a] = []
   for q in case:
-    resulttemp[case[q]].append(calen[q-1][1])
+    resulttemp[case[q]].append(calen[q-1][3][0])
   for w in resulttemp:
     dictt = {}
     for e in dutytypes:
@@ -455,4 +457,5 @@ print(finalcases)
 
 
 mandatory modification points
+calen[3] worktype cast from list to str
 ***do not pre decide 토주, 일주, yet decide it last which best fits***"""
