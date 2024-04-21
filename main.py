@@ -343,6 +343,15 @@ def combimerge(groups):
         yield merged
 '''combine elements of groups to make schedule cases'''
 
+def sortandtestadjacent(merged):
+  subject = dict(sorted(merged.items()))
+  previous = -1
+  for q in subject:
+    temp = merged[q] 
+    if temp == previous: return
+    previous = temp 
+  else : return subject
+
 def evaluatescore(calen):
   '''calen has to be sorted by date'''
   workingdays = defaultdict(list)
@@ -398,25 +407,27 @@ def schedulelog(case):
       dictt[r] += 1
     result[w] = dictt
 
-  return result 
-  
+  for l in result:
+    print(l, ':', result[l])
 
-def makefinalcases(combimerge):
+
+def makefinalcase(combimerge):
   score = 0
   result = []
-  cnt = 0
+ 
   for merged in combimerge:
-    for g in allotworkerandconcernoffdays(dict(sorted(merged.items()))):
+    filtered = sortandtestadjacent(merged)
+    cnt = 0
+    for g in allotworkerandconcernoffdays(filtered):
+      
       if g != None:
         scoreg = evaluatescore(g)
-        cnt += 1
-        if cnt > 100000: 
-          print(result)
-          for s in result: print(schedulelog(s))
         if score < scoreg:
           result.clear()
           result.append(g)
           score = scoreg
+          print(g)
+          schedulelog(g)
           cnt = 0
         elif score == scoreg:
           result.append(g)
@@ -425,7 +436,7 @@ def makefinalcases(combimerge):
 
   return result
 
-finalcases = makefinalcases(combimerge(groups))
+finalcases = makefinalcase(combimerge(groups))
 
 print(finalcases)
 
