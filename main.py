@@ -1,5 +1,5 @@
 from typing_extensions import ParamSpecArgs
-from typing import Generator
+from typing import Generator, List, Dict, Tuple
 import calendar
 import datetime
 from collections import defaultdict
@@ -383,21 +383,43 @@ def allotworkerandconcernoffdays(merged):
   else: yield from []
 '''filter3'''
 
+def schedulelog(case):
+  result : Dict[str,dict] = {}
+  resulttemp : Dict[str,list] = {}
+  for q in case:
+    resulttemp[case[q]].append(calen[q-1][1])
+  for w in resulttemp:
+    dictt = {}
+    for e in dutytypes:
+      dictt[e] = 0
+    for r in resulttemp[w]:
+      dictt[r] += 1
+    result[w] = dictt
+
+  return result 
+  
+
 def makefinalcases(combimerge):
   score = 0
   result = []
+  cnt = 0
   for merged in combimerge:
     for g in allotworkerandconcernoffdays(dict(sorted(merged.items()))):
       if g != None:
-        if score < evaluatescore(g):
+        scoreg = evaluatescore(g)
+        cnt += 1
+        if cnt > 100000: 
+          print(result)
+          for s in result: print(schedulelog(s))
+        if score < scoreg:
           result.clear()
           result.append(g)
-        elif score == evaluatescore(g):
+          score = scoreg
+          cnt = 0
+        elif score == scoreg:
           result.append(g)
         else: pass
       else:pass
-
-  result = dict(sorted(result.items()))
 
   return result
 
