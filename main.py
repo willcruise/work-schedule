@@ -417,6 +417,7 @@ def allotworkerandconcernoffdays(merged):
         allotedcal[w] = q[int(merged[w])]
 
       for e in allotedcal:
+   
         if e in dayoffs[allotedcal[e]]: yield 
       else: yield allotedcal
   else: yield 
