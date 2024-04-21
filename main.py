@@ -448,7 +448,7 @@ print(finalcases)
 
 """regression process"""
 
-"""1. make calendars regarding to weights.
+"""1. make calendars regarding weights.
      allot specific weights to each duty types,
      and group duties for each workers concerning the vacations, and dayoffs
     2. test the calenders built from the previous step by work counts, and distance between days of work
