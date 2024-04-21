@@ -6,9 +6,9 @@ def insertelement(l, e):
         element = first + [e] + second
         result.append(element)
     return result
-    
+
 def permutations(l):
-    
+
     if len(l) == 2:
         result = []
         result.append(l)
@@ -16,18 +16,16 @@ def permutations(l):
         a.append(l[1])
         a.append(l[0])
         result.append(a)
-        return result
-        
+        yield result
+
     else:
         e = l[0]
         l.remove(e)
-        per = permutations(l)
-        
-        def yieldins(per):
-            for j in per:
-                for q in insertelement(j, e):
-                    yield q
-                
-        return list(yieldins(per))
-        
-print(permutations([1,2,3,4,5]))
+        per = list(permutations(l))
+
+
+        for j in per:
+            for q in insertelement(j, e):
+                yield q
+
+
