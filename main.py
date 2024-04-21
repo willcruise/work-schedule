@@ -131,6 +131,8 @@ def processdayoff(dayoffs):
 
 dayoffs = processdayoff(dayoffs)
 
+
+
 """process the dayoffs input()"""
 
 
@@ -340,7 +342,6 @@ def combimerge(groups):
         yield merged
 '''combine elements of groups to make schedule cases'''
 
-
 def sortandtest(merged):
   sortedcal = dict(sorted(merged.items()))
   previous = -1
@@ -388,26 +389,30 @@ def permutations(l):
         a.append(l[1])
         a.append(l[0])
         result.append(a)
-        return result
+        yield result
 
     else:
         e = l[0]
         l.remove(e)
-        per = permutations(l)
+        per = list(permutations(l))
+        
+        
+        for j in per:
+            for q in insertelement(j, e):
+                yield q
 
-        def yieldins(per):
-            for j in per:
-                for q in insertelement(j, e):
-                    yield q
-
-        return list(yieldins(per))
+        
 
 
 def allotworkerandconcernoffdays(merged):
   if merged != None:
-    workerper = permutations(workers)
+    
+    workerper = list(permutations(workers))
+   
     for q in workerper:
-      allotedcal = merged
+
+      allotedcal = {}
+
       for w in merged:
         allotedcal[w] = q[int(merged[w])]
 
@@ -415,13 +420,13 @@ def allotworkerandconcernoffdays(merged):
         if e in dayoffs[allotedcal[e]]: yield 
       else: yield allotedcal
   else: yield 
+'''filter3'''
 
-def makefinalcases(mergedgen):
+def makefinalcases(combimerge):
   score = 0
   result = []
-  for merged in mergedgen:
-    result2 = sortandtest(merged)
-    for g in allotworkerandconcernoffdays(result2):
+  for merged in combimerge:
+    for g in allotworkerandconcernoffdays(merged):
       if g != None:
         if score < evaluatescore(g):
           result.clear()
@@ -430,7 +435,9 @@ def makefinalcases(mergedgen):
           result.append(g)
         else: pass
       else:pass
-      
+
+  result = dict(sorted(result.items()))
+
   return result
 
 finalcases = makefinalcases(combimerge(groups))
@@ -465,7 +472,3 @@ print(finalcases)
 
 mandatory modification points
 ***do not pre decide 토주, 일주, yet decide it last which best fits***"""
-
-
-
-
