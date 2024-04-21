@@ -1,4 +1,5 @@
 from typing_extensions import ParamSpecArgs
+from typing import Generator
 import calendar
 import datetime
 from collections import defaultdict
@@ -342,18 +343,8 @@ def combimerge(groups):
         yield merged
 '''combine elements of groups to make schedule cases'''
 
-def sortandtest(merged):
-  sortedcal = dict(sorted(merged.items()))
-  previous = -1
-  for q in sortedcal:
-    if sortedcal[q] == previous: return
-    previous = sortedcal[q]
-  else:
-    return sortedcal
-'''filter1'''
-
 def evaluatescore(calen):
-
+  '''calen has to be sorted by date'''
   workingdays = defaultdict(list)
   for q in calen:
     workingdays[calen[q]].append(q)
@@ -365,50 +356,19 @@ def evaluatescore(calen):
 
   score = 0
   for t in gaps:
-    score += np.log(t)
+    if t > 0 : score += np.log(t)
+    else: print('oops!')
 
   return score
 
 '''filter2'''
 
-def insertelement(l, e):
-    result = []
-    for i in range(len(l) + 1):
-        first = l[:i]
-        second = l[i:]
-        element = first + [e] + second
-        result.append(element)
-    return result
-
-def permutations(l):
-
-    if len(l) == 2:
-        result = []
-        result.append(l)
-        a = []
-        a.append(l[1])
-        a.append(l[0])
-        result.append(a)
-        yield result
-
-    else:
-        e = l[0]
-        l.remove(e)
-        per = list(permutations(l))
-        
-        
-        for j in per:
-            for q in insertelement(j, e):
-                yield q
-
-        
-
 
 def allotworkerandconcernoffdays(merged):
   if merged != None:
-    
-    workerper = list(permutations(workers))
-   
+
+    workerper = list(itertools.permutations(workers))
+
     for q in workerper:
 
       allotedcal = {}
@@ -417,17 +377,17 @@ def allotworkerandconcernoffdays(merged):
         allotedcal[w] = q[int(merged[w])]
 
       for e in allotedcal:
-   
-        if e in dayoffs[allotedcal[e]]: yield 
+
+        if e in dayoffs[allotedcal[e]]: yield from []
       else: yield allotedcal
-  else: yield 
+  else: yield from []
 '''filter3'''
 
 def makefinalcases(combimerge):
   score = 0
   result = []
   for merged in combimerge:
-    for g in allotworkerandconcernoffdays(merged):
+    for g in allotworkerandconcernoffdays(dict(sorted(merged.items()))):
       if g != None:
         if score < evaluatescore(g):
           result.clear()
@@ -442,6 +402,7 @@ def makefinalcases(combimerge):
   return result
 
 finalcases = makefinalcases(combimerge(groups))
+
 print(finalcases)
 
 
