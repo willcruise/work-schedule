@@ -146,10 +146,7 @@ weights["일야"] = 0.7
 
 dutytypes = ["평야", "금야", "토야", "일야"]
 
-
-print("How many PIECES?")
-PIECES = int(input())
-
+PIECES = 3
 
 calens = []
 for i in range(PIECES):
@@ -365,8 +362,7 @@ def evaluatescore(calen):
 
   score = 0
   for t in gaps:
-    if t > 0 : score += np.log(t)
-    else: print('oops!')
+    score += np.log(t)
 
   return score
 
@@ -469,4 +465,5 @@ print(finalcases)
 
 mandatory modification points
 calen[3] worktype cast from list to str
+make starting point different
 ***do not pre decide 토주, 일주, yet decide it last which best fits***"""
