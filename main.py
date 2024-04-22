@@ -2,7 +2,7 @@ from typing_extensions import ParamSpecArgs
 from typing import Generator, List, Dict, Tuple
 import calendar
 import datetime
-from collections import defaultdict
+from collections import defaultdict, deque
 import itertools
 import numpy as np
 
@@ -28,6 +28,8 @@ if holidays[0] != '':
         holidays[i] = int(holidays[i])
 """get holidays for the month"""
 
+dutytypes = ["평야", "금야", "토야", "일야"]
+"""list of duty types"""
 
 calen = []
 
@@ -67,24 +69,23 @@ for i in range(len(calen)):
 
 for i in range(len(calen)):
     if  calen[i][1] <= 3:
-        calen[i].append(["평야"])
+        calen[i].append(dutytypes[0])
     elif calen[i][1] == 4:
-        calen[i].append(["금야"])
+        calen[i].append(dutytypes[1])
     elif calen[i][1] == 5:
-        calen[i].append(["토야"])
+        calen[i].append(dutytypes[2])
     elif calen[i][1] == 6:
-        calen[i].append(["일야"])
-
+        calen[i].append(dutytypes[3])
 """until now, got the calender for the month of the schedule"""
 
 print("Enter the workers: name1, name2, ...")
 workers = input()
 workers = workers.replace(" ","").split(",")
-
 """get workers"""
 
 print("Enter the dayoffs of workers; name1: day1 ~ day2, day3, name2: ...")
 dayoffs = input()
+'''get input of dayoffs'''
 
 def processdayoff(dayoffs):
     temp = dayoffs.replace(" ", '')
@@ -129,8 +130,7 @@ def processdayoff(dayoffs):
     return resultdraft3
 
 dayoffs = processdayoff(dayoffs)
-print(dayoffs)
-"""process the dayoffs input()"""
+"""process the dayoffs input string"""
 
 
 weights = {}
@@ -138,39 +138,36 @@ weights["평야"] = 1
 weights["금야"] = 1.8
 weights["토야"] = 1.5
 weights["일야"] = 0.7
+"""allot weights for each dutytype"""
 
-
-dutytypes = ["평야", "금야", "토야", "일야"]
-
-PIECES = 3
+PIECES = 2
+"""how many pieces are you going to divide the calendar"""
 
 calens = []
 for i in range(PIECES):
   if i == 0:
     calens.append([calen[i] for i in range(len(calen)//PIECES)])
   else: calens.append([calen[i] for i in range(len(calen)*i//PIECES, len(calen)*(i+1)//PIECES)])
+"""divide the calendar"""
 
 monthlyduties = []
 for i in range(PIECES):
-  monthlyduties.append([c[0] for c in [i[3] for i in calens[i]]])
-
+  monthlyduties.append([r[3] for r in calens[i]])
+"""get all duties fo each divided calendar"""
 
 def dutysort(e):
-    return weights[e]
+  return weights[e]
 
 for i in range(PIECES):
   monthlyduties[i].sort(reverse = True, key = dutysort)
-
 """get and sort montly services"""
 
 def dutygroups(monthlyduties):
     dutygroups = {}
     for i in range(len(workers)): dutygroups[i] = []
 
-
     def elementcnt(e):
         return len(dutygroups[e])
-
 
     for i in monthlyduties:
         groupweights = {}
@@ -192,38 +189,36 @@ def dutygroups(monthlyduties):
     return dutygroups
 
 dutygroups = [dutygroups(m) for m in monthlyduties]
+"""alloting works for each anonymous workers regarging weights; by greedy allocation"""
 
-def workerbyduties(dutygroups):
-    workerbyduties = {}
-    for i in dutytypes:
-        workerbyduties[i] = []
+def workerbyduty(dutygroups):
+  workerbyduties = {}
+  for i in dutytypes:
+    workerbyduties[i] = []
 
-    for i in dutygroups:
-        for c in dutygroups[i]:
-            for q in dutytypes:
-                if c == q:
-                    workerbyduties[c].append(i)
-                    break
-                else: pass
-    return workerbyduties
+  for i in dutygroups:
+    for c in dutygroups[i]:
+      workerbyduties[c].append(i)
+  
+  return workerbyduties
 
-workerbyduties = [workerbyduties(d) for d in dutygroups]
+workerbyduties = [workerbyduty(d) for d in dutygroups]
 
-def daybyduties(calen):
+"""group anonymous workers for each dutytype"""
+
+def daybyduty(calen):
     daybyduties = {}
     for i in dutytypes:
         daybyduties[i] = []
 
     for i in calen:
-        for c in i[3]:
-            for q in dutytypes:
-                if c == q:
-                    daybyduties[c].append(i[0])
-                    break
-                else: pass
+      daybyduties[i[3]].append(i[0])
+      
     return daybyduties
 
-daybyduties = [daybyduties(c) for c in calens]
+daybyduties = [daybyduty(c) for c in calens]
+
+"""group days for each dutytype"""
 
 def combinelists(a, b):
     result = []
@@ -231,7 +226,7 @@ def combinelists(a, b):
         result.append(list(a)+list(i))
     return result
 
-def makecombinations(ll, r):
+def makecombinations(ll, r = 0):
     result = []
     final = []
     indices =list(range(r))
@@ -248,13 +243,10 @@ def makecombinations(ll, r):
             indices[j] = indices[j-1] + 1
         yield [ll[i] for i in indices]
 
-
-
 def combination(workerbyduties, daybyduties):
     result = {}
 
     for i in workerbyduties:
-
         workercnt = defaultdict(int)
         for c in workerbyduties[i]:
             workercnt[c] += 1
@@ -297,7 +289,6 @@ combinations = [combination(workerbyduties[i], daybyduties[i]) for i in range(PI
 
 '''from now, merge the divided calender'''
 
-
 groups = {}
 cnt = 0
 for q in combinations:
@@ -314,25 +305,22 @@ def combimerge(groups):
     yield first
 
     while True:
+      for d in indices:
+        if indices[d] < len(groups[d]) - 1 : break
+      else: return
 
-        for d in indices:
-            if indices[d] < len(groups[d]) - 1 : break
-        else: return
-
-        for d in indices:
-
-            if indices[d] < len(groups[d]) - 1:
-                indices[d] += 1
-                break
-            else:
-                indices[d] = 0
-
-        merged = {}
-
-        for d in indices:
+      for d in indices:
+        if indices[d] < len(groups[d]) - 1:
+          indices[d] += 1
+          break
+        else:
+          indices[d] = 0
+        
+      merged = {}
+      for d in indices:
             merged.update(groups[d][indices[d]])
 
-        yield merged
+      yield merged
 '''combine elements of groups to make schedule cases'''
 
 def sortandtestadjacent(merged):
@@ -340,11 +328,10 @@ def sortandtestadjacent(merged):
   previous = -1
   for q in subject:
     temp = merged[q]
-    if temp == previous: return
+    if temp == previous: return False
     previous = temp
   else : return subject
 '''filter1'''
-
 
 def evaluatescore(calen):
   '''calen has to be sorted by date'''
@@ -364,25 +351,25 @@ def evaluatescore(calen):
   return score
 '''filter2'''
 
-
 def allotworker(merged):
-  if merged != None:
+  if merged:
     workerper = list(itertools.permutations(workers))
     for q in workerper:
       allotedcal = {}
       for w in merged:
         allotedcal[w] = q[int(merged[w])]
       yield allotedcal
-  else: yield from []
+  else: yield False
 '''filter3'''
 
 def concerndayoffs(allotedcal):
-  for q in dayoffs:
-    for w in dayoffs[q]:
-      if allotedcal[w] == q:
-        return
+  if allotedcal:
+    for q in dayoffs:
+      for w in dayoffs[q]:
+        if allotedcal[w] == q:
+          return False
   return allotedcal
-
+  
 '''filter4'''
 
 def schedulelog(case):
@@ -391,7 +378,7 @@ def schedulelog(case):
   for a in workers:
     resulttemp[a] = []
   for q in case:
-    resulttemp[case[q]].append(calen[q-1][3][0])
+    resulttemp[case[q]].append(calen[q-1][3])
   for w in resulttemp:
     dictt = {}
     for e in dutytypes:
@@ -409,24 +396,22 @@ def makefinalcase(combimerge):
   result = []
 
   for merged in combimerge:
-    filtered = sortandtestadjacent(merged)
-    cnt = 0
-    temp1 = allotworker(merged)
-    temp2 = [concerndayoffs(v) for v in temp1 if concerndayoffs(v) != None]
-    for g in temp2 : 
-      if g != None:
-        scoreg = evaluatescore(g)
-        if score < scoreg:
-          result.clear()
-          result.append(g)
-          score = scoreg
-          print(g)
-          schedulelog(g)
-          cnt = 0
-        elif score == scoreg:
-          result.append(g)
-        else: pass
-      else:pass
+    filtered1 = sortandtestadjacent(merged)
+    filtered2 = allotworker(filtered1)
+    filtered3 = [concerndayoffs(v) for v in filtered2 if concerndayoffs(v)]
+    for g in filtered3 :
+      scoreg = evaluatescore(g)
+      if score > scoreg: continue
+      elif score < scoreg:
+        result.clear()
+        result.append(g)
+        score = scoreg
+        print(g)
+        print(score)
+        schedulelog(g)
+        result.append(g)
+      else: 
+        result.append(g)
 
   return result
 
@@ -463,6 +448,5 @@ print(finalcases)
 
 mandatory modification points
 use deque
-calen[3] worktype cast from list to str
 make starting point different
 ***do not pre decide 토주, 일주, yet decide it last which best fits***"""
