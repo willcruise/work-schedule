@@ -1,11 +1,11 @@
-from typing_extensions import ParamSpecArgs
+'''from typing_extensions import ParamSpecArgs'''
 from typing import Generator, List, Dict, Tuple
 import calendar
 import datetime
 from collections import defaultdict, deque
 import itertools
 import numpy as np
-
+from more_itertools import distinct_permutations
 
 print("Enter year and month: year-month ex)2024-3")
 yearmonth = input()
@@ -228,45 +228,21 @@ def combinelists(a, b):
     return result
 
 def combination(workerbyduties, daybyduties):
-    result = {}
+  result = {}
+  for t in dutytypes:
+    result[t] = []
 
-    for i in workerbyduties:
-        workercnt = defaultdict(int)
-        for c in workerbyduties[i]:
-          workercnt[c] += 1
-        workercnt = dict(workercnt)
-        pegs = deque([])
-        for q in workercnt:
-            subjects = []
-            if pegs:
-                for u in pegs:
-                    subjects.append([f for f in daybyduties[i] if f not in u])
-
-                def elements2():
-                    for p in range(len(subjects)):
-                        combi = list(itertools.combinations(subjects[p], workercnt[q]))
-                        for o in combinelists(pegs[p], combi): yield(o)
-
-                pegs = list(elements2())
-            else:
-                subjects = [daybyduties[i]]
-                pegs = list(itertools.combinations(subjects[0], workercnt[q]))
-
-        result[i] = pegs
-
-    result3 = {}
-    for q in dutytypes:
-        index = range(len(workerbyduties[q]))
-        result3[q] = []
-
-        for r in result[q]:
-            result2 = {}
-            for e in index:
-                result2[r[e]] = workerbyduties[q][e]
-
-            result3[q].append(result2)
-
-    return result3
+  for q in workerbyduties:
+    workercount = defaultdict(int)
+    for w in workerbyduties[q]:
+      workercount[w] += 1
+    for e in distinct_permutations(workerbyduties[q]):
+      result2 = {}
+      for r in range(len(e)):
+        result2[daybyduties[q][r]] = e[r]
+      result[q].append(result2)
+  print(result)
+  return result
 
 combinations = [combination(workerbyduties[i], daybyduties[i]) for i in range(PIECES)]
 print(combinations)
@@ -432,4 +408,5 @@ print(finalcases)
 mandatory modification points
 use deque
 make starting point different
+evaluate score from start to end in month
 ***do not pre decide 토주, 일주, yet decide it last which best fits***"""
