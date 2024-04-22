@@ -204,7 +204,7 @@ def workerbyduty(dutygroups):
   return workerbyduties
 
 workerbyduties = [workerbyduty(d) for d in dutygroups]
-
+print(workerbyduties)
 """group anonymous workers for each dutytype"""
 
 def daybyduty(calen):
@@ -218,7 +218,7 @@ def daybyduty(calen):
     return daybyduties
 
 daybyduties = [daybyduty(c) for c in calens]
-
+print(daybyduties)
 """group days for each dutytype"""
 
 def combinelists(a, b):
@@ -228,7 +228,7 @@ def combinelists(a, b):
     return result
 
 def makecombinations(ll, r):
-  if ll != [] and r != 0:
+  if ll != []:
     result = []
     final = []
     indices =list(range(r))
@@ -288,7 +288,6 @@ def combination(workerbyduties, daybyduties):
     return result3
 
 combinations = [combination(workerbyduties[i], daybyduties[i]) for i in range(PIECES)]
-
 
 '''from now, merge the divided calender'''
 
