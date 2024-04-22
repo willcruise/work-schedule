@@ -140,7 +140,8 @@ weights["토야"] = 1.5
 weights["일야"] = 0.7
 """allot weights for each dutytype"""
 
-PIECES = 2
+print("How many PIECES?")
+PIECES = int(input())
 """how many pieces are you going to divide the calendar"""
 
 calens = []
@@ -226,7 +227,8 @@ def combinelists(a, b):
         result.append(list(a)+list(i))
     return result
 
-def makecombinations(ll, r = 0):
+def makecombinations(ll, r):
+  if ll != [] and r != 0:
     result = []
     final = []
     indices =list(range(r))
@@ -242,6 +244,7 @@ def makecombinations(ll, r = 0):
         for j in range(i+1, r):
             indices[j] = indices[j-1] + 1
         yield [ll[i] for i in indices]
+  else: yield []
 
 def combination(workerbyduties, daybyduties):
     result = {}
@@ -249,7 +252,7 @@ def combination(workerbyduties, daybyduties):
     for i in workerbyduties:
         workercnt = defaultdict(int)
         for c in workerbyduties[i]:
-            workercnt[c] += 1
+          workercnt[c] += 1
         workercnt = dict(workercnt)
         pegs = []
         for q in workercnt:
@@ -369,7 +372,6 @@ def concerndayoffs(allotedcal):
         if allotedcal[w] == q:
           return False
   return allotedcal
-  
 '''filter4'''
 
 def schedulelog(case):
