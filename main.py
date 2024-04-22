@@ -126,14 +126,10 @@ def processdayoff(dayoffs):
         if a not in resultdraft3.keys():
             resultdraft3[a] = []
 
-
     return resultdraft3
 
-
 dayoffs = processdayoff(dayoffs)
-
-
-
+print(dayoffs)
 """process the dayoffs input()"""
 
 
@@ -309,7 +305,6 @@ for q in combinations:
         groups[cnt] = q[w]
         cnt += 1
 
-
 def combimerge(groups):
     indices = {d: 0 for d in groups}
     first = {}
@@ -344,10 +339,12 @@ def sortandtestadjacent(merged):
   subject = dict(sorted(merged.items()))
   previous = -1
   for q in subject:
-    temp = merged[q] 
+    temp = merged[q]
     if temp == previous: return
-    previous = temp 
+    previous = temp
   else : return subject
+'''filter1'''
+
 
 def evaluatescore(calen):
   '''calen has to be sorted by date'''
@@ -365,28 +362,28 @@ def evaluatescore(calen):
     score += np.log(t)
 
   return score
-
 '''filter2'''
 
 
-def allotworkerandconcernoffdays(merged):
+def allotworker(merged):
   if merged != None:
-
     workerper = list(itertools.permutations(workers))
-
     for q in workerper:
-
       allotedcal = {}
-
       for w in merged:
         allotedcal[w] = q[int(merged[w])]
-
-      for e in allotedcal:
-
-        if e in dayoffs[allotedcal[e]]: yield from []
-      else: yield allotedcal
+      yield allotedcal
   else: yield from []
 '''filter3'''
+
+def concerndayoffs(allotedcal):
+  for q in dayoffs:
+    for w in dayoffs[q]:
+      if allotedcal[w] == q:
+        return
+  return allotedcal
+
+'''filter4'''
 
 def schedulelog(case):
   result : Dict[str,dict] = {}
@@ -410,12 +407,13 @@ def schedulelog(case):
 def makefinalcase(combimerge):
   score = 0
   result = []
- 
+
   for merged in combimerge:
     filtered = sortandtestadjacent(merged)
     cnt = 0
-    for g in allotworkerandconcernoffdays(filtered):
-      
+    temp1 = allotworker(merged)
+    temp2 = [concerndayoffs(v) for v in temp1 if concerndayoffs(v) != None]
+    for g in temp2 : 
       if g != None:
         scoreg = evaluatescore(g)
         if score < scoreg:
@@ -448,7 +446,7 @@ print(finalcases)
 
 """regression process"""
 
-"""1. make calendars regarding weights.
+"""1. make calendars regarding to weights.
      allot specific weights to each duty types,
      and group duties for each workers concerning the vacations, and dayoffs
     2. test the calenders built from the previous step by work counts, and distance between days of work
@@ -464,6 +462,7 @@ print(finalcases)
 
 
 mandatory modification points
+use deque
 calen[3] worktype cast from list to str
 make starting point different
 ***do not pre decide 토주, 일주, yet decide it last which best fits***"""
