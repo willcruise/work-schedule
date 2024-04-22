@@ -200,7 +200,7 @@ def workerbyduty(dutygroups):
   for i in dutygroups:
     for c in dutygroups[i]:
       workerbyduties[c].append(i)
-  
+
   return workerbyduties
 
 workerbyduties = [workerbyduty(d) for d in dutygroups]
@@ -214,7 +214,7 @@ def daybyduty(calen):
 
     for i in calen:
       daybyduties[i[3]].append(i[0])
-      
+
     return daybyduties
 
 daybyduties = [daybyduty(c) for c in calens]
@@ -227,25 +227,6 @@ def combinelists(a, b):
         result.append(list(a)+list(i))
     return result
 
-def makecombinations(ll, r):
-  if ll != []:
-    result = []
-    final = []
-    indices =list(range(r))
-    n = len(ll)
-    yield [ll[i] for i in indices]
-    while True:
-        for i in reversed(range(r)):
-            if indices[i] != i + n - r:
-                break
-        else:
-            return
-        indices[i] += 1
-        for j in range(i+1, r):
-            indices[j] = indices[j-1] + 1
-        yield [ll[i] for i in indices]
-  else: yield []
-
 def combination(workerbyduties, daybyduties):
     result = {}
 
@@ -254,22 +235,22 @@ def combination(workerbyduties, daybyduties):
         for c in workerbyduties[i]:
           workercnt[c] += 1
         workercnt = dict(workercnt)
-        pegs = []
+        pegs = deque([])
         for q in workercnt:
             subjects = []
-            if pegs == []:
-                subjects = [daybyduties[i]]
-                pegs = list(makecombinations(subjects[0], workercnt[q]))
-            else:
+            if pegs:
                 for u in pegs:
                     subjects.append([f for f in daybyduties[i] if f not in u])
 
                 def elements2():
                     for p in range(len(subjects)):
-                        combi = list(makecombinations(subjects[p], workercnt[q]))
+                        combi = list(itertools.combinations(subjects[p], workercnt[q]))
                         for o in combinelists(pegs[p], combi): yield(o)
 
                 pegs = list(elements2())
+            else:
+                subjects = [daybyduties[i]]
+                pegs = list(itertools.combinations(subjects[0], workercnt[q]))
 
         result[i] = pegs
 
@@ -288,6 +269,7 @@ def combination(workerbyduties, daybyduties):
     return result3
 
 combinations = [combination(workerbyduties[i], daybyduties[i]) for i in range(PIECES)]
+print(combinations)
 
 '''from now, merge the divided calender'''
 
@@ -317,7 +299,7 @@ def combimerge(groups):
           break
         else:
           indices[d] = 0
-        
+
       merged = {}
       for d in indices:
             merged.update(groups[d][indices[d]])
@@ -411,7 +393,7 @@ def makefinalcase(combimerge):
         print(score)
         schedulelog(g)
         result.append(g)
-      else: 
+      else:
         result.append(g)
 
   return result
