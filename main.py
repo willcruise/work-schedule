@@ -6,6 +6,7 @@ from collections import defaultdict, deque
 import itertools
 import numpy as np
 from more_itertools import distinct_permutations
+import statistics
 
 print("Enter year and month: year-month ex)2024-3")
 yearmonth = input()
@@ -77,6 +78,8 @@ for i in range(len(calen)):
     elif calen[i][1] == 6:
         calen[i].append(dutytypes[3])
 """until now, got the calender for the month of the schedule"""
+print(calen)
+
 
 print("Enter the workers: name1, name2, ...")
 workers = input()
@@ -144,12 +147,40 @@ print("How many PIECES?")
 PIECES = int(input())
 """how many pieces are you going to divide the calendar"""
 
-calens = []
+def daybyduty(calen):
+    daybyduties = {}
+    for i in dutytypes:
+        daybyduties[i] = []
+
+    for i in calen:
+      daybyduties[i[3]].append(i[0])
+
+    return daybyduties
+
+
+wholedaybyduties = daybyduty(calen)
+
+calenstemp = []
 for i in range(PIECES):
+  calenstemp.append([])
+
+for q in wholedaybyduties:
+  for f in range(len(wholedaybyduties[q])):
+    calenstemp[f%PIECES].append(wholedaybyduties[q][f])
+
+calens = []  
+for b in range(PIECES):
+  calens.append([])
+  for h in calenstemp[b]:
+    calens[b].append(calen[h-1])
+
+"""divide the calendar"""
+
+'''for i in range(PIECES):
   if i == 0:
     calens.append([calen[i] for i in range(len(calen)//PIECES)])
-  else: calens.append([calen[i] for i in range(len(calen)*i//PIECES, len(calen)*(i+1)//PIECES)])
-"""divide the calendar"""
+  else: calens.append([calen[i] for i in range(len(calen)*i//PIECES, len(calen)*(i+1)//PIECES)])'''
+
 
 monthlyduties = []
 for i in range(PIECES):
@@ -204,21 +235,11 @@ def workerbyduty(dutygroups):
   return workerbyduties
 
 workerbyduties = [workerbyduty(d) for d in dutygroups]
-print(workerbyduties)
+
 """group anonymous workers for each dutytype"""
 
-def daybyduty(calen):
-    daybyduties = {}
-    for i in dutytypes:
-        daybyduties[i] = []
-
-    for i in calen:
-      daybyduties[i[3]].append(i[0])
-
-    return daybyduties
-
 daybyduties = [daybyduty(c) for c in calens]
-print(daybyduties)
+
 """group days for each dutytype"""
 
 def combinelists(a, b):
@@ -245,7 +266,7 @@ def combination(workerbyduties, daybyduties):
   return result
 
 combinations = [combination(workerbyduties[i], daybyduties[i]) for i in range(PIECES)]
-print(combinations)
+
 
 '''from now, merge the divided calender'''
 
@@ -293,20 +314,45 @@ def sortandtestadjacent(merged):
   else : return subject
 '''filter1'''
 
-def evaluatescore(calen):
+def schedulelog(case):
+  result : Dict[str,dict] = {}
+  resulttemp : Dict[str,list] = {}
+  for a in workers:
+    resulttemp[a] = []
+  for q in case:
+    resulttemp[case[q]].append(calen[q-1][3])
+  for w in resulttemp:
+    dictt = {}
+    for e in dutytypes:
+      dictt[e] = 0
+    for r in resulttemp[w]:
+      dictt[r] += 1
+    result[w] = dictt
+
+  return result 
+
+def evaluatescore(calen, schedulelog):
   '''calen has to be sorted by date'''
-  workingdays = defaultdict(list)
+  score = 0
+
+  workingdays = {}
+  for m in workers:
+    workingdays[m] = [0]
   for q in calen:
     workingdays[calen[q]].append(q)
-  workingdays = dict(workingdays)
+  for m in workers:
+    workingdays[m].append(monthrange+1)
+
   gaps = []
   for e in workingdays:
     for r in range(len(workingdays[e])-1):
       gaps.append(workingdays[e][r+1] - workingdays[e][r])
 
-  score = 0
   for t in gaps:
     score += np.log(t)
+  
+  for l in schedulelog:
+
 
   return score
 '''filter2'''
@@ -331,24 +377,6 @@ def concerndayoffs(allotedcal):
   return allotedcal
 '''filter4'''
 
-def schedulelog(case):
-  result : Dict[str,dict] = {}
-  resulttemp : Dict[str,list] = {}
-  for a in workers:
-    resulttemp[a] = []
-  for q in case:
-    resulttemp[case[q]].append(calen[q-1][3])
-  for w in resulttemp:
-    dictt = {}
-    for e in dutytypes:
-      dictt[e] = 0
-    for r in resulttemp[w]:
-      dictt[r] += 1
-    result[w] = dictt
-
-  for l in result:
-    print(l, ':', result[l])
-
 
 def makefinalcase(combimerge):
   score = 0
@@ -359,7 +387,8 @@ def makefinalcase(combimerge):
     filtered2 = allotworker(filtered1)
     filtered3 = [concerndayoffs(v) for v in filtered2 if concerndayoffs(v)]
     for g in filtered3 :
-      scoreg = evaluatescore(g)
+      temp = schedulelog(g)
+      scoreg = evaluatescore(g, temp)
       if score > scoreg: continue
       elif score < scoreg:
         result.clear()
@@ -367,7 +396,8 @@ def makefinalcase(combimerge):
         score = scoreg
         print(g)
         print(score)
-        schedulelog(g)
+        for l in temp:
+          print(l, ':', temp[l])
         result.append(g)
       else:
         result.append(g)
@@ -409,4 +439,6 @@ mandatory modification points
 use deque
 make starting point different
 evaluate score from start to end in month
+improve daybyduty
+
 ***do not pre decide 토주, 일주, yet decide it last which best fits***"""
