@@ -1,5 +1,6 @@
 dutygroups = {'평야':--, '금야':--, '토야': -- , '일야': --}
---> must make workerbyduties
+--> must make day and worker match
+dayandworkermatch = {1:-, 2:-,3:-,...,31}
 
 
 
