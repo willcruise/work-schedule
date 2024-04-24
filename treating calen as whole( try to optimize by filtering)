@@ -279,6 +279,7 @@ def schedulelog(case):
 
   return result
 
+'''match and filter all possilbe combinations of workerbyduty and daybyduty'''
 def filtermatched(workerbyduty, daybyduty):
 
   for e in distinct_permutations(workerbyduty):
@@ -290,15 +291,69 @@ def filtermatched(workerbyduty, daybyduty):
     '''filter1'''
 
     if not filtered1: continue
-    else: 
+    else:
       for v in allotworkers(filtered1):
         if concerndayoffs(v): yield v
         '''filter3'''
 
-matchedbyduty = {}
 
-for i in dutytypes:
-  matchedbyduty[i] = list(filtermatched(workerbyduties[i], daybyduties[i]))
 
-print(matchedbyduty)
+'''combine the possible matched worker and days to one whole calendar and yield it'''
+def combinematched():
+  matchedgens = {}
+  for i in dutytypes:
+    matchedgens[i] = filtermatched(workerbyduties[i], daybyduties[i])
 
+
+
+
+
+
+
+
+
+
+
+'''
+      score = evaluatescore(filtered)
+      if score < pscore : continue
+        else:
+          cnt += 1
+          print(cnt)
+          pscore = score
+          for y in allotworker(filtered):
+            if concerndayoffs(y): yield y
+'''
+
+"""group monthly duties for the weight sums of each group to be similar. Using greedy allocation"""
+
+
+
+"""get vacations, dayoffs for workers"""
+
+"""allot duties for workers"""
+
+"""regression process"""
+
+"""1. make calendars regarding to weights.
+     allot specific weights to each duty types,
+     and group duties for each workers concerning the vacations, and dayoffs
+    2. test the calenders built from the previous step by work counts, and distance between days of work
+       alloted to each workers.
+    3. evaluate the final schedule
+    """
+
+"""final schedule"""
+
+
+""" optional modification point 1: set dutytypes
+    2 : set restrictions for each workers according to offdays
+
+
+mandatory modification points
+use deque
+make starting point different
+evaluate score from start to end in month
+improve daybyduty
+
+***do not pre decide 토주, 일주, yet decide it last which best fits***"""
