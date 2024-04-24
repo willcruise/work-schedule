@@ -227,12 +227,8 @@ def evaluatescore(matched):
   score = 0
 
   workingdays = {}
-  for m in workers:
-    workingdays[m] = [0]
   for q in matched:
     workingdays[matched[q]].append(q)
-  for j in workers:
-    workingdays[j].append(monthrange+1)
 
   gaps = []
   for e in workingdays:
@@ -338,11 +334,14 @@ def finalcheck():
   while True:
     try: subject = next(combinematchedgen)
     except: break
-    if concerndayoffs(subject):
-      score =  evaluatescore(subject)
-      if pscore <= score:
-        yield subject
-    else: yield from []
+    subject2 = sortandtestadjacent(subject)
+    if subject2:
+      if concerndayoffs(subject2):
+        score =  evaluatescore(subject2)
+        if pscore <= score:
+          yield subject2
+      else: yield from []
+    else: yield from []  
 
 
 for element in finalcheck():
