@@ -414,7 +414,7 @@ def schedulelog(case):
 
   return result
 
-def evaluatescore(calen, schedulelog):
+def evaluatescore(calen):
   '''calen has to be sorted by date'''
   score = 0
 
@@ -439,23 +439,21 @@ def evaluatescore(calen, schedulelog):
 '''filter2'''
 
 def allotworker(merged):
-  if merged:
     workerper = list(itertools.permutations(workers))
     for q in workerper:
       allotedcal = {}
       for w in merged:
         allotedcal[w] = q[int(merged[w])]
       yield allotedcal
-  else: yield False
 '''filter3'''
 
-def concerndayoffs(allotedcal):
-  if allotedcal:
+def concerndayoffs(alloted):
+  if alloted:
     for q in dayoffs:
       for w in dayoffs[q]:
         if allotedcal[w] == q:
           return False
-  return allotedcal
+  return alloted
 '''filter4'''
 
 
@@ -464,25 +462,33 @@ def makefinalcase(combimerge):
   result = []
 
   for merged in combimerge:
- 
     filtered1 = sortandtestadjacent(merged)
-    filtered2 = allotworker(filtered1)
-    filtered3 = [concerndayoffs(v) for v in filtered2 if concerndayoffs(v)]
-    for g in filtered3 :
-      temp = schedulelog(g)
-      scoreg = evaluatescore(g, temp)
-      if score > scoreg: continue
-      elif score < scoreg:
-        result.clear()
-        result.append(g)
-        score = scoreg
-        print(g)
-        print(score)
-        for l in temp:
-          print(l, ':', temp[l])
-        result.append(g)
-      else:
-        result.append(g)
+    if filtered1:
+      filtered2gen = allotworker(filtered1)
+      filtered3 = [concerndayoffs(v) for v in filtered2gen]
+      for g in filtered3 :
+        if g:
+          print(g)
+          sch = schedulelog(g)
+          scoreg = evaluatescore(g)
+          if score > scoreg: continue
+          elif score < scoreg:
+            result.clear()
+            result.append(g)
+            score = scoreg
+            print(g)
+            print(score)
+            print(sch)
+            for l in sch:
+              print(l, ':', sch[l])
+            result.append(g)
+          else:
+            print(g)
+            print(score)
+            print(sch)
+            for l in sch:
+              print(l, ':', sch[l])
+            result.append(g)
 
   return result
 
