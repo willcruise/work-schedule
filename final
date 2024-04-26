@@ -247,13 +247,13 @@ print(pdaybyduties)
 ###########################################################################
 '''dividing wholeworkerbyduties in PIECES in order to match divided calendar'''
 
-def divwholewbd(wholeworkerbyduties, daybyduties):
+def divwholewbd(whworkerbyduties, ppdaybyduties):
   result = []
   for k in range(PIECES):
     result.append({})
 
 
-  target = sorted(wholeworkerbyduties['평야'])
+  target = sorted(whworkerbyduties['평야'])
   #set space for divided workers
   divided = []
   for f in range(PIECES):
@@ -261,8 +261,8 @@ def divwholewbd(wholeworkerbyduties, daybyduties):
 
   #get element counts of each divided
   limits = []
-  for t in daybyduties:
-    limits.append(len(t['평야']))
+  for t in ppdaybyduties:
+    limits.append(len(list(t.values())[0]))
 
   #allot workers
   for j in range(len(target)):
@@ -464,7 +464,7 @@ def makefinalcase(combimerge):
   result = []
 
   for merged in combimerge:
-    print(merged)
+ 
     filtered1 = sortandtestadjacent(merged)
     filtered2 = allotworker(filtered1)
     filtered3 = [concerndayoffs(v) for v in filtered2 if concerndayoffs(v)]
