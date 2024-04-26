@@ -468,7 +468,6 @@ def makefinalcase(combimerge):
       filtered3 = [concerndayoffs(v) for v in filtered2gen]
       for g in filtered3 :
         if g:
-          print(g)
           sch = schedulelog(g)
           scoreg = evaluatescore(g)
           if score > scoreg: continue
