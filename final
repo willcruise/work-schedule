@@ -451,7 +451,7 @@ def concerndayoffs(alloted):
   if alloted:
     for q in dayoffs:
       for w in dayoffs[q]:
-        if allotedcal[w] == q:
+        if alloted[w] == q:
           return False
   return alloted
 '''filter4'''
