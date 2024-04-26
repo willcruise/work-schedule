@@ -290,6 +290,7 @@ print(pworkerbyduties)
 
 ####################################################################
 def distinct_permutations(A):
+  #A has to be sorted in ascending order
         size = len(A)
         while True:
             # Yield the permutation we have
@@ -347,9 +348,8 @@ del wholedaybyduties['평야']
 
 
 combinations = [combination(pworkerbyduties[i], pdaybyduties[i]) for i in range(PIECES)] + [combination(wholeworkerbyduties, wholedaybyduties)]
-print(combinations)
 
-'''from now, merge the divided calender'''
+'''from now, merge all the combinations obtained'''
 
 groups = {}
 cnt = 0
@@ -358,7 +358,6 @@ for q in combinations:
         groups[cnt] = q[w]
         cnt += 1
 
-print(groups)
 
 def combimerge(groups):
     indices = {d: 0 for d in groups}
