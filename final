@@ -1,0 +1,526 @@
+'''from typing_extensions import ParamSpecArgs'''
+from typing import Generator, List, Dict, Tuple
+import calendar
+import datetime
+from collections import defaultdict, deque
+import itertools
+import numpy as np
+import statistics
+
+####################################################
+
+print("Enter year and month: year-month ex)2024-3")
+yearmonth = input()
+"""get year and month of the making schedule"""
+
+
+datelist = yearmonth.replace(" ", "").split("-")
+datelist[1] = datelist[1]
+
+datetime_date = datetime.date(int(datelist[0]), int(datelist[1]), 1)
+firstdayofweek = datetime_date.weekday()
+monthrange = calendar.monthrange(int(datelist[0]), int(datelist[1]))[1]
+"""get monthrange and day of week of the first day of month"""
+
+print("Enter the holidays: day1, day2, ... ex)4,5,6,15,29")
+holidays = input()
+holidays = holidays.replace(" ","").split(",")
+if holidays[0] != '':
+    for i in range(len(holidays)):
+        holidays[i] = int(holidays[i])
+"""get holidays for the month"""
+
+dutytypes = ["평야", "금야", "토야", "일야"]
+"""list of duty types"""
+
+calen = []
+
+for i in range(monthrange):
+    if firstdayofweek == 0:
+        calen.append([i+1, firstdayofweek, "월"])
+    elif firstdayofweek == 1:
+        calen.append([i+1, firstdayofweek, "화"])
+    elif firstdayofweek == 2:
+        calen.append([i+1, firstdayofweek, "수"])
+    elif firstdayofweek == 3:
+        calen.append([i+1, firstdayofweek, "목"])
+    elif firstdayofweek == 4:
+        calen.append([i+1, firstdayofweek, "금"])
+    elif firstdayofweek == 5:
+        calen.append([i+1, firstdayofweek, "토"])
+    else:
+        calen.append([i+1, firstdayofweek, "일"])
+
+    if firstdayofweek < 6:
+        firstdayofweek += 1
+    else : firstdayofweek = 0
+
+
+for i in holidays:
+    for c in range(len(calen)):
+        if i == calen[c][0]:
+            calen[c][1] = 5
+
+yesteroff = False
+for i in range(len(calen)):
+    if calen[i][1] == 5 or calen[i][1] == 6:
+        if yesteroff == True: calen[i][1] = 6
+        yesteroff = True
+    else: yesteroff = False
+'''modify the type of the holiays'''
+
+for i in range(len(calen)):
+    if  calen[i][1] <= 3:
+        calen[i].append(dutytypes[0])
+    elif calen[i][1] == 4:
+        calen[i].append(dutytypes[1])
+    elif calen[i][1] == 5:
+        calen[i].append(dutytypes[2])
+    elif calen[i][1] == 6:
+        calen[i].append(dutytypes[3])
+"""until now, got the calender for the month of the schedule"""
+print(calen)
+
+
+print("Enter the workers: name1, name2, ...")
+workers = input()
+workers = workers.replace(" ","").split(",")
+"""get workers"""
+
+print("Enter the dayoffs of workers; name1: day1 ~ day2, day3, name2: ...")
+dayoffs = input()
+'''get input of dayoffs'''
+
+def processdayoff(dayoffs):
+    temp = dayoffs.replace(" ", '')
+
+    workerindex = []
+    for q in workers:
+        if temp.find(q) == -1: continue
+        else:
+            workerindex.append(temp.find(q))
+
+    resultdraft = []
+    previous = len(temp) + 1
+    for e in reversed(range(len(workerindex))):
+        resultdraft.append(temp[workerindex[e]:previous])
+        previous = workerindex[e]
+
+
+    resultdraft2 = {}
+    for r in resultdraft:
+        resultdraft2[r.split(':')[0]] = r.split(':')[1]
+
+    for t in resultdraft2:
+        resultdraft2[t] = resultdraft2[t].replace('/', '').split(',')
+        for y in resultdraft2[t]:
+            if y == '': resultdraft2[t].remove('')
+
+    resultdraft3 = {}
+
+    for u in resultdraft2:
+        resultdraft3[u] = []
+        for i in range(len(resultdraft2[u])):
+            if '~' in resultdraft2[u][i]:
+                o = resultdraft2[u][i].split('~')
+                for p in range(int(o[0]), int(o[1])+1):
+                    resultdraft3[u].append(p)
+            else: resultdraft3[u].append(int(resultdraft2[u][i]))
+
+    for a in workers:
+        if a not in resultdraft3.keys():
+            resultdraft3[a] = []
+
+    return resultdraft3
+
+dayoffs = processdayoff(dayoffs)
+"""process the dayoffs input string"""
+##########################################################################
+weights = {}
+weights["평야"] = 1
+weights["금야"] = 1.8
+weights["토야"] = 1.5
+weights["일야"] = 0.7
+"""allot weights for each dutytype"""
+
+PIECES = 2
+"""how many pieces are you going to divide the calendar"""
+
+wholemonthlyduties = [r[3] for r in calen]
+"""get all duties of whole calendar"""
+
+def dutysort(e):
+  return weights[e]
+
+wholemonthlyduties.sort(reverse = True, key = dutysort)
+"""sort montlduties"""
+
+def dutygroups(sortedmonthlyduties):
+    dutygroups = {}
+    for i in range(len(workers)): dutygroups[i] = []
+
+    def elementcnt(e):
+        return len(dutygroups[e])
+
+    for i in sortedmonthlyduties:
+        groupweights = {}
+        sums = {}
+        for w in dutygroups:
+            d = []
+            for c in dutygroups[w]:
+                d.append(weights[c])
+            groupweights[w] = d
+
+
+        for a in groupweights:
+            sums[a] = sum(groupweights[a])
+
+        finkeys = list(dict(sorted(sums.items(), key = lambda a: a[1])))
+
+        dutygroups[finkeys[0]].append(i)
+
+    return dutygroups
+
+wholedutygroup = dutygroups(wholemonthlyduties)
+"""alloting works for each anonymous workers regarging weights about a whole calendar; by greedy allocation"""
+print(wholedutygroup)
+####################################################################################
+def daybyduty(calen):
+    daybyduties = {}
+    for d in dutytypes:
+      daybyduties[d] = []
+
+    for i in calen:
+      daybyduties[i[3]].append(i[0])
+
+    return daybyduties
+
+wholedaybyduties = daybyduty(calen)
+"""group days for each dutytype"""
+print(wholedaybyduties)
+
+###################################################################################
+def workerbyduty(dutygroups):
+  workerbyduties = {}
+  for i in dutytypes:
+    workerbyduties[i] = []
+
+  for i in dutygroups:
+    for c in dutygroups[i]:
+      workerbyduties[c].append(i)
+
+  return workerbyduties
+
+wholeworkerbyduties = workerbyduty(wholedutygroup)
+"""group anonymous workers for each dutytype"""
+print(wholeworkerbyduties)
+
+#################################################################################
+calenstemp = []
+for i in range(PIECES):
+  calenstemp.append([])
+
+for q in wholedaybyduties:
+  for f in range(len(wholedaybyduties[q])):
+    calenstemp[f%PIECES].append(wholedaybyduties[q][f])
+
+calens = []
+for b in range(PIECES):
+  calens.append([])
+  for h in calenstemp[b]:
+    calens[b].append(calen[h-1])
+
+"""divide the calendar"""
+##################################################################
+def daybyduty2(calen, n):
+    daybyduties = {}
+    daybyduties['평야' + str(n)] = []
+    for i in calen:
+      if i[3] == '평야':
+        daybyduties['평야' + str(n)].append(i[0])
+
+    return daybyduties
+
+pdaybyduties = [daybyduty2(calens[c], c) for c in range(len(calens))]
+"""group days for each dutytype"""
+print(pdaybyduties)
+###########################################################################
+'''dividing wholeworkerbyduties in PIECES in order to match divided calendar'''
+
+def divwholewbd(wholeworkerbyduties, daybyduties):
+  result = []
+  for k in range(PIECES):
+    result.append({})
+
+
+  target = sorted(wholeworkerbyduties['평야'])
+  #set space for divided workers
+  divided = []
+  for f in range(PIECES):
+    divided.append([])
+
+  #get element counts of each divided
+  limits = []
+  for t in daybyduties:
+    limits.append(len(t['평야']))
+
+  #allot workers
+  for j in range(len(target)):
+    input = target[j]
+    n = j%PIECES
+    while True:
+      if n == PIECES: n = 0
+      if len(divided[n]) < limits[n]:
+        divided[n].append(input)
+        break
+      else: n += 1
+
+  print(divided)
+
+  #append to result
+  for l in range(PIECES):
+    resultappend = {}
+    resultappend['평야' + str(l)] = divided[l]
+    result[l].update(resultappend)
+
+  return result
+
+pworkerbyduties = divwholewbd(wholeworkerbyduties, daybyduties)
+print(pworkerbyduties)
+
+####################################################################
+def distinct_permutations(A):
+        size = len(A)
+        while True:
+            # Yield the permutation we have
+            yield tuple(A)
+
+            # Find the largest index i such that A[i] < A[i + 1]
+            for i in range(size - 2, -1, -1):
+                if A[i] < A[i + 1]:
+                    break
+            #  If no such index exists, this permutation is the last one
+            else:
+                return
+
+            # Find the largest index j greater than j such that A[i] < A[j]
+            for j in range(size - 1, i, -1):
+                if A[i] < A[j]:
+                    break
+
+            # Swap the value of A[i] with that of A[j], then reverse the
+            # sequence from A[i + 1] to form the new permutation
+            A[i], A[j] = A[j], A[i]
+            A[i + 1 :] = A[: i - size : -1]  # A[i + 1:][::-1]
+
+    # Algorithm: modified from the above
+
+def combinelists(a, b):
+    result = []
+    for i in b:
+        result.append(list(a)+list(i))
+    return result
+
+def combination(workerbyduties, daybyduties):
+  result = {}
+  for t in workerbyduties:
+    result[t] = []
+
+  for q in workerbyduties:
+    workercount = {}
+    for w in workerbyduties[q]:
+      workercount[w] = 0
+
+    for w in workerbyduties[q]:
+      workercount[w] +=1
+
+    for e in distinct_permutations(workerbyduties[q]):
+      result2 = {}
+      for r in range(len(e)):
+        result2[daybyduties[q][r]] = e[r]
+      result[q].append(result2)
+
+  return result
+
+del wholeworkerbyduties['평야']
+del wholedaybyduties['평야']
+
+
+combinations = [combination(pworkerbyduties[i], pdaybyduties[i]) for i in range(PIECES)] + [combination(wholeworkerbyduties, wholedaybyduties)]
+print(combinations)
+
+'''from now, merge the divided calender'''
+
+groups = {}
+cnt = 0
+for q in combinations:
+    for w in q:
+        groups[cnt] = q[w]
+        cnt += 1
+
+print(groups)
+
+def combimerge(groups):
+    indices = {d: 0 for d in groups}
+    first = {}
+    for d in groups:
+        first.update(groups[d][0])
+
+    yield first
+
+    while True:
+      for d in indices:
+        if indices[d] < len(groups[d]) - 1 : break
+      else: return
+
+      for d in indices:
+        if indices[d] < len(groups[d]) - 1:
+          indices[d] += 1
+          break
+        else:
+          indices[d] = 0
+
+      merged = {}
+      for d in indices:
+            merged.update(groups[d][indices[d]])
+
+      yield merged
+'''combine elements of groups to make schedule cases'''
+
+def sortandtestadjacent(merged):
+  subject = dict(sorted(merged.items()))
+  previous = -1
+  for q in subject:
+    temp = merged[q]
+    if temp == previous: return False
+    previous = temp
+  else : return subject
+'''filter1'''
+
+def schedulelog(case):
+  result : Dict[str,dict] = {}
+  resulttemp : Dict[str,list] = {}
+  for a in workers:
+    resulttemp[a] = []
+  for q in case:
+    resulttemp[case[q]].append(calen[q-1][3])
+  for w in resulttemp:
+    dictt = {}
+    for e in dutytypes:
+      dictt[e] = 0
+    for r in resulttemp[w]:
+      dictt[r] += 1
+    result[w] = dictt
+
+  return result
+
+def evaluatescore(calen, schedulelog):
+  '''calen has to be sorted by date'''
+  score = 0
+
+  workingdays = {}
+  for m in workers:
+    workingdays[m] = [0]
+  for q in calen:
+    workingdays[calen[q]].append(q)
+  for m in workers:
+    workingdays[m].append(monthrange+1)
+
+  gaps = []
+  for e in workingdays:
+    for r in range(len(workingdays[e])-1):
+      gaps.append(workingdays[e][r+1] - workingdays[e][r])
+
+  for t in gaps:
+    score += np.log(t)
+
+
+  return score
+'''filter2'''
+
+def allotworker(merged):
+  if merged:
+    workerper = list(itertools.permutations(workers))
+    for q in workerper:
+      allotedcal = {}
+      for w in merged:
+        allotedcal[w] = q[int(merged[w])]
+      yield allotedcal
+  else: yield False
+'''filter3'''
+
+def concerndayoffs(allotedcal):
+  if allotedcal:
+    for q in dayoffs:
+      for w in dayoffs[q]:
+        if allotedcal[w] == q:
+          return False
+  return allotedcal
+'''filter4'''
+
+
+def makefinalcase(combimerge):
+  score = 0
+  result = []
+
+  for merged in combimerge:
+    print(merged)
+    filtered1 = sortandtestadjacent(merged)
+    filtered2 = allotworker(filtered1)
+    filtered3 = [concerndayoffs(v) for v in filtered2 if concerndayoffs(v)]
+    for g in filtered3 :
+      temp = schedulelog(g)
+      scoreg = evaluatescore(g, temp)
+      if score > scoreg: continue
+      elif score < scoreg:
+        result.clear()
+        result.append(g)
+        score = scoreg
+        print(g)
+        print(score)
+        for l in temp:
+          print(l, ':', temp[l])
+        result.append(g)
+      else:
+        result.append(g)
+
+  return result
+
+finalcases = makefinalcase(combimerge(groups))
+
+print(finalcases)
+
+
+
+"""group monthly duties for the weight sums of each group to be similar. Using greedy allocation"""
+
+
+
+"""get vacations, dayoffs for workers"""
+
+"""allot duties for workers"""
+
+"""regression process"""
+
+"""1. make calendars regarding to weights.
+     allot specific weights to each duty types,
+     and group duties for each workers concerning the vacations, and dayoffs
+    2. test the calenders built from the previous step by work counts, and distance between days of work
+       alloted to each workers.
+    3. evaluate the final schedule
+    """
+
+"""final schedule"""
+
+
+""" optional modification point 1: set dutytypes
+    2 : set restrictions for each workers according to offdays
+
+
+mandatory modification points
+use deque
+make starting point different
+evaluate score from start to end in month
+improve daybyduty
+
+***do not pre decide 토주, 일주, yet decide it last which best fits***"""
