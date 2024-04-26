@@ -285,7 +285,7 @@ def divwholewbd(wholeworkerbyduties, daybyduties):
 
   return result
 
-pworkerbyduties = divwholewbd(wholeworkerbyduties, daybyduties)
+pworkerbyduties = divwholewbd(wholeworkerbyduties, pdaybyduties)
 print(pworkerbyduties)
 
 ####################################################################
