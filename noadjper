@@ -1,0 +1,54 @@
+from itertools import combinations
+
+def noadjper(Test):
+
+  typecount = {}
+  for i in Test:
+    typecount[i] = 0
+  for i in Test:
+    typecount[i] += 1
+
+  def sort(e):
+    return typecount[e]
+
+  Test.sort(key = sort)
+
+  pegs = []
+  groups = []
+  previous = 1
+  previoustype = -1
+  for q in typecount:
+    if pegs = []:
+      for i in range(typecount[q]):
+        pegs.append(q)
+      for w in range(previous + typecount[q]):
+        groups.append([])
+      previous += typecount[q]
+      previoustype = q
+    else: 
+      for h in pegs:
+        for x in combinations(list(range(len(groups))), typecount[q]):
+          pegtmp = []
+          groupstmp = groups
+          for e in x:
+            groupstmp[e].append(q)
+          for q in range(len(groupstmp)-1):
+            pegtmp.append(groupstmp[q][0])
+            pegtmp.append(h[q])
+          pegtmp.append(groupstmp[-1][0])
+
+          pegs.append(pegtmp)
+
+      groups.clear()
+      for w in range(previous + typecount[q]):
+        groups.append([])
+      previous += typecount[q]
+      previoustype = q
+
+
+
+
+
+print(list(noadjper(['a','a','a','a','b','b','b''c','c','c'])))
+
+  
