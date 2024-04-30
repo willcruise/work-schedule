@@ -1,5 +1,4 @@
 import numpy as np
-from scipy.sparse import dok_matrix
 import calendar
 import datetime
 from collections import defaultdict, deque
@@ -18,7 +17,7 @@ datetime_date = datetime.date(int(datelist[0]), int(datelist[1]), 1)
 dayofweek = datetime_date.weekday()
 monthrange = calendar.monthrange(int(datelist[0]), int(datelist[1]))[1]
 
-#get holidays 
+#get holidays
 print("Enter the holidays: day1, day2, ... ex)4,5,6,15,29")
 holidaysinput = input()
 holidaysinput = holidaysinput.replace(" ","").split(",")
@@ -57,7 +56,7 @@ def makecalen(dayofweek, monthrange):
     if dayofweek < 6:
       dayofweek += 1
     else : dayofweek = 0
-  
+
   return calen
 
 calendraft = makecalen(dayofweek, monthrange)
@@ -155,30 +154,92 @@ weights["토야"] = 1.5
 weights["일야"] = 0.7
 ################################################################################
 
-layer = []
+#initialize table
 row = len(workers)
 col = monthrange
-table = dok_matrix((row, col), dtype = np.int8)
+inittable = np.zeros((row, col), dtype = np.int8).tolist()
+
+#match workers and column
 wmatch = {}
-
-for w in range(len(workers)):
-  wmatch[w] = workers[w]
-
-
-for i in range(row):
-  for j in range(col):
-    table[i, j] = 0
+for i in range(len(workers)):
+  wmatch[i] = workers[i]
+  wmatch[workers[i]] = i
 
 
-def weightstate(table):
+def markdayoffs(table):
+  for w in dayoffs:
+    for d in dayoffs[w]:
+      table[wmatch[w]][d] = -1
+  return table
+
+# mark dayoff slots to -1
+inittable = markdayoffs(inittable)
+
+#generate weightstate of each column(worker) of table
+def genweightstate(table):
   weightstate = {}
-  for w in workers:
-    weightstate[w] = 0
-  
-  for i in range(col):
-    for j in range(row):
-      if table[i, j] == 1:
-        weightstate[wmatch[j]] += weights[calen[i][1]]
+
+  for i in range(len(table)):
+    weightstate[i] = 0
+    for j in range(len(table[0])):
+      if table[i][j] == 1:
+        weightstate[i] += weights[calen[j+1][1]]
+
+  return weightstate
+
+#return column(worker) of minimum weight sum
+def getmins(weightstate):
+  result = []
+  value = -1
+  for k in weightstate:
+    if value == -1: 
+      value = weightstate[k]
+      result.append(k)
+    else:
+      if value < weightstate[k] : continue
+      elif value > weightstate[k]:
+        result.clear()
+        result.append(k)
+        value = weightstate[k]
+      else: result.append(k)
+
+  return result
+
+def evaluatescore();
+
+
+#allot worker
+def allotworker(table, col):
+  weightstate = genweightstate(table)
+  for r in range(len(table)):
+    if table[r][col] == -1:
+      del weightstate[r]
+
+  candidates = getmins(weightstate)
+
+  #more restrictions
+  for 
+
+
+  return table
+
+
+
+
+#iterate through columns of table and generate all possible tables
+table = inittable
+for itercol in range(col):
+  table = allotworker(table, itercol)
+
+print(table)
+      
+
+
+
+
+
+
+
 
 
 
