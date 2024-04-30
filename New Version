@@ -20,11 +20,12 @@ monthrange = calendar.monthrange(int(datelist[0]), int(datelist[1]))[1]
 
 #get holidays 
 print("Enter the holidays: day1, day2, ... ex)4,5,6,15,29")
-holidays = input()
-holidays = holidays.replace(" ","").split(",")
-if holidays[0] != '':
-    for i in range(len(holidays)):
-        holidays[i] = int(holidays[i])
+holidaysinput = input()
+holidaysinput = holidaysinput.replace(" ","").split(",")
+holidays = []
+for i in holidaysinput:
+  if i != '':
+    holidays.append(int(i))
 
 #dutytypes
 dutytypes = ["평야", "금야", "토야", "일야"]
@@ -53,9 +54,9 @@ def makecalen(dayofweek, monthrange):
     else:
       calen[i].append(dayofweek)
 
-    if firstdayofweek < 6:
-      firstdayofweek += 1
-    else : firstdayofweek = 0
+    if dayofweek < 6:
+      dayofweek += 1
+    else : dayofweek = 0
   
   return calen
 
@@ -87,7 +88,7 @@ def modcal(calendraft):
   return calendraft
 
 calen = modcal(calendraft)
-
+print(calen)
 ################################################################################
 #get workers
 print("Enter the workers: name1, name2, ...")
@@ -154,14 +155,31 @@ weights["토야"] = 1.5
 weights["일야"] = 0.7
 ################################################################################
 
-table = dok_matrix((len(workers), monthrange), dtype = np.int8)
+layer = []
+row = len(workers)
+col = monthrange
+table = dok_matrix((row, col), dtype = np.int8)
+wmatch = {}
+
+for w in range(len(workers)):
+  wmatch[w] = workers[w]
+
+
+for i in range(row):
+  for j in range(col):
+    table[i, j] = 0
+
 
 def weightstate(table):
   weightstate = {}
   for w in workers:
     weightstate[w] = 0
-
   
+  for i in range(col):
+    for j in range(row):
+      if table[i, j] == 1:
+        weightstate[wmatch[j]] += weights[calen[i][1]]
+
 
 
 
