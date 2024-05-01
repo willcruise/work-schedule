@@ -105,64 +105,31 @@ dayoffs = input()
 
 #process the dayoff string to necessary form
 def processdayoff(dayoffs):
-    temp = dayoffs.replace(" ", '')
+  temp = dayoffs.replace(" ", '')
 
-    workerindex = []
-    for q in workers:
-        if temp.find(q) == -1: continue
-        else:
-            workerindex.append(temp.find(q))
+  resultdraft1 = {}
+  temp = temp.split(':')
+  for e in temp:
+    resultdraft1[e[-1]] = [] 
 
-    resultdraft = []
-    previous = len(temp) + 1
-    for e in reversed(range(len(workerindex))):
-        resultdraft.append(temp[workerindex[e]:previous])
-        previous = workerindex[e]
+  for e in range(len(temp)):
+    temp[e] = temp[e][:len(temp[e])-1]
+    
+  for e in temp:
+    if e == '':
+      temp.remove(e)
 
+  print(temp)
 
-    resultdraft2 = {}
-    for r in resultdraft:
-        resultdraft2[r.split(':')[0]] = r.split(':')[1]
-
-    for t in resultdraft2:
-        resultdraft2[t] = resultdraft2[t].replace('/', '').split(',')
-        for y in resultdraft2[t]:
-            if y == '': resultdraft2[t].remove('')
-
-    resultdraft3 = {}
-
-    for u in resultdraft2:
-        resultdraft3[u] = []
-        for i in range(len(resultdraft2[u])):
-            if '~' in resultdraft2[u][i]:
-                o = resultdraft2[u][i].split('~')
-                for p in range(int(o[0]), int(o[1])+1):
-                    resultdraft3[u].append(p)
-            else: resultdraft3[u].append(int(resultdraft2[u][i]))
-
-    for a in workers:
-        if a not in resultdraft3.keys():
-            resultdraft3[a] = []
-
-    resultdraft4 = {}
-    for date in range(1, monthrange+1):
-      resultdraft4[date] = []
-
-    for w in resultdraft3:
-      for date in resultdraft3[w]:
-        resultdraft4[date].append(w)
-
-    return resultdraft4
+  cnt = 0
+  for w in resultdraft1:
+    resultdraft1[w].append(temp[cnt])
+    cnt += 1
+  
+  print(resultdraft1)
+    
 
 dayoffs = processdayoff(dayoffs)
-
-
-#weights for each dutytype
-weights = {}
-weights[dutytypes[0]] = 1
-weights[dutytypes[1]] = 1.8
-weights[dutytypes[2]] = 1.5
-weights[dutytypes[3]] = 0.7
 
 # constants: monthrange, holidays, dutytypes, weights, row, col
 
@@ -171,12 +138,12 @@ row = len(workers)
 col = monthrange
 inittable = np.zeros((row, col), dtype = np.int8)
 
-#initialize table for matching dutytype for each days 
+#initialize table for matching dutytype for each days
 dayanddutytype = np.zeros((monthrange, len(dutytypes)))
 for r in range(monthrange):
   for c in range(len(dutytypes)):
     if dutytypes[c] == calen[r+1][2] :
-      dayanddutytype[r, c] = weights[dutytypes[c]]
+      dayanddutytype[r, c] = 1
 
 #utility: match workers and column
 wmatch = {}
@@ -217,7 +184,7 @@ def getmins(weightstate, dutytype):
 
   return result
 
-#return latest day the work is done 
+#return latest day the work is done
 def getlatest(table, row):
   for col in reversed(range(monthrange)):
     if table[row,col] == 1: return col
@@ -226,8 +193,8 @@ def getlatest(table, row):
 
 #allot worker to table of column
 def allotworker(table, col):
-  #get weightstate of table; weightstate is a indicater for 
-  #checking the amount of work done to date by each worker  
+  #get weightstate of table; weightstate is a indicater for
+  #checking the amount of work done to date by each worker
   weightstate = genweightstate(table)
 
   #concern dayoffs : set data value of the dayoff worker(row) to 128(large)
@@ -235,7 +202,19 @@ def allotworker(table, col):
     r = wmatch[w]
     for c in range(len(weightstate[r])):
       weightstate[r, c] = 128
-
+  
+  # exclude previous worker row from weightstate if rows are more than one 
+  if len(weightstate) > 1:
+    previousworker = -1
+    for r in range(len(table)):
+      if table[r, col-1] == 1:
+        previousworker = r
+        break
+    
+    for c in range(len(weightstate[previousworker])):
+      weightstate[previousworker, c] = 128
+  
+  
   #get final candadites from weightstate by picking worker who has done minimum work
   candidates = getmins(weightstate, calen[col+1][2])
 
@@ -284,8 +263,11 @@ def schedulelog(table):
         for d in dutytypes:
           if calen[c+1][2] == d: log[wmatch[r]][d] += 1
 
+  print('<schedule log>')
   for w in log:
     print(w, ':', log[w])
 
 schedulelog(table)
+
+#q:1~10, e:11~16, u:2~5, t:8~20,1,2
 
