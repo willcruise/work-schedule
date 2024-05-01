@@ -1,10 +1,8 @@
 import numpy as np
 import calendar
 import datetime
-from collections import defaultdict, deque
 import itertools
-import numpy as np
-import statistics
+
 
 #get year and month of the making schedule
 print("Enter year and month: year-month ex)2024-3")
@@ -192,7 +190,7 @@ def getmins(weightstate):
   result = []
   value = -1
   for k in weightstate:
-    if value == -1: 
+    if value == -1:
       value = weightstate[k]
       result.append(k)
     else:
@@ -205,8 +203,11 @@ def getmins(weightstate):
 
   return result
 
-def evaluatescore();
-
+def getlatest(table, row):
+  for col in reversed(range(len(table[row]))):
+    if table[row][col] == 1: return col
+    return -1
+    
 
 #allot worker
 def allotworker(table, col):
@@ -217,22 +218,39 @@ def allotworker(table, col):
 
   candidates = getmins(weightstate)
 
-  #more restrictions
-  for 
-
+  #more restrictions: pick one worker which the latest work is farthest
+  minval = len(table[0])
+  finalcandidate = []
+  for candidate in candidates:
+    test = getlatest(table, candidate)
+    if minval < test: continue
+    elif minval > test:
+      finalcandidate.clear()
+      finalcandidate.append(candidate)
+      minval = test
+    else: finalcandidate.append(candidate)
+  
+  table[finalcandidate[0]][col] = 1
 
   return table
 
 
 
-
-#iterate through columns of table and generate all possible tables
+#iterate through columns of table and generate final table
 table = inittable
 for itercol in range(col):
   table = allotworker(table, itercol)
 
-print(table)
-      
+
+for c in range(len(workers)):
+  for r in range(monthrange):
+    if table[c][r] == 1:
+      calen[r+1].append(wmatch[c])
+
+print(calen)
+
+
+
 
 
 
