@@ -1,7 +1,6 @@
 import numpy as np
 import calendar
 import datetime
-import itertools
 
 
 #get year and month of the making schedule
@@ -29,7 +28,7 @@ dutytypes = ['평야', '금야', '토주야', '일주야']
 
 
 # constants: dayofweek, monthrange, holidays, dutytypes
-################################################################################
+
 
 # make calendar
 def makecalen(dayofweek, monthrange):
@@ -94,20 +93,20 @@ def modifycal(calendraft):
 
 calen = modifycal(calendraft)
 
-print(calen)
-################################################################################
+
+
 #get workers
 print("Enter the workers: name1, name2, ...")
 workers = input()
 workers = workers.replace(" ","").split(",")
 """get workers"""
 
-################################################################################
+
 #get dayoffs
 print("Enter the dayoffs of workers; name1: day1 ~ day2, day3, name2: ...")
 dayoffs = input()
 
-#process the dayoff string
+#process the dayoff string to necessary form
 def processdayoff(dayoffs):
     temp = dayoffs.replace(" ", '')
 
@@ -161,33 +160,35 @@ def processdayoff(dayoffs):
 dayoffs = processdayoff(dayoffs)
 
 
-################################################################################
 #weights for each dutytype
 weights = {}
 weights[dutytypes[0]] = 1
 weights[dutytypes[1]] = 1.8
 weights[dutytypes[2]] = 1.5
 weights[dutytypes[3]] = 0.7
-################################################################################
 
-#initialize table
+# constants: monthrange, holidays, dutytypes, weights, row, col
+
+#initialize table for alloting workers
 row = len(workers)
 col = monthrange
 inittable = np.zeros((row, col), dtype = np.int8)
 
+#initialize table for matching dutytype for each days 
 dayanddutytype = np.zeros((monthrange, len(dutytypes)))
 for r in range(monthrange):
   for c in range(len(dutytypes)):
     if dutytypes[c] == calen[r+1][2] :
       dayanddutytype[r, c] = weights[dutytypes[c]]
-#match workers and column
+
+#utility: match workers and column
 wmatch = {}
 for i in range(len(workers)):
   wmatch[i] = workers[i]
   wmatch[workers[i]] = i
 
 
-#match dutytype and index(col)
+#utility: match dutytype and index(column)
 dmatch = {}
 for i in range(len(dutytypes)):
   dmatch[i] = dutytypes[i]
@@ -219,27 +220,29 @@ def getmins(weightstate, dutytype):
 
   return result
 
+#return latest day the work is done 
 def getlatest(table, row):
   for col in reversed(range(monthrange)):
     if table[row,col] == 1: return col
   else: return -1
 
 
-#allot worker
+#allot worker to table of column
 def allotworker(table, col):
+  #get weightstate of table; weightstate is a indicater for 
+  #checking the amount of work done to date by each worker  
   weightstate = genweightstate(table)
-  #concern dayoffs
+
+  #concern dayoffs : set data value of the dayoff worker(row) to 128(large)
   for w in dayoffs[col+1]:
     r = wmatch[w]
     for c in range(len(weightstate[r])):
       weightstate[r, c] = 128
 
-  print(weightstate)
-
-  #get final candadites to pick
+  #get final candadites from weightstate by picking worker who has done minimum work
   candidates = getmins(weightstate, calen[col+1][2])
 
-  #more restrictions: pick one worker which the latest work is farthest
+  #pick one worker which the day of latest work is farthest from candidates
   minval = len(table[0])
   finalcandidate = []
   for candidate in candidates:
@@ -255,12 +258,10 @@ def allotworker(table, col):
 
   return table
 
-
-#iterate through columns of table and generate final table
+#iterate through columns of table, allot worker,  and render final table
 table = inittable
 for itercol in range(col):
   table = allotworker(table, itercol)
-
 
 for c in range(len(workers)):
   for r in range(monthrange):
@@ -271,7 +272,7 @@ for g in calen:
   print(g, ':', calen[g][1], calen[g][3])
 
 
-#make schedule log
+#make schedule log and print
 def schedulelog(table):
   log = {}
   for w in workers:
@@ -288,7 +289,6 @@ def schedulelog(table):
 
   for w in log:
     print(w, ':', log[w])
-
 
 schedulelog(table)
 
