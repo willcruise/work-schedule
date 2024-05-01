@@ -25,7 +25,8 @@ for i in holidaysinput:
     holidays.append(int(i))
 
 #dutytypes
-dutytypes = ["평야", "금야", "토주야", "일주야"]
+dutytypes = ['평야', '금야', '토주야', '일주야']
+
 
 # constants: dayofweek, monthrange, holidays, dutytypes
 ################################################################################
@@ -67,7 +68,7 @@ def makecalen(dayofweek, monthrange):
 calendraft = makecalen(dayofweek, monthrange)
 
 # modify the dutytype regarding holidays
-def modcal(calendraft):
+def modifycal(calendraft):
   for i in holidays:
     calendraft[i][0] = 5
 
@@ -91,7 +92,8 @@ def modcal(calendraft):
 
   return calendraft
 
-calen = modcal(calendraft)
+calen = modifycal(calendraft)
+
 print(calen)
 ################################################################################
 #get workers
@@ -162,68 +164,62 @@ weights[dutytypes[3]] = 0.7
 #initialize table
 row = len(workers)
 col = monthrange
-inittable = np.zeros((row, col), dtype = np.int8).tolist()
+inittable = np.zeros((row, col), dtype = np.int8)
 
+dayanddutytype = np.zeros((monthrange, len(dutytypes)))
+for r in range(monthrange):
+  for c in range(len(dutytypes)):
+    if dutytypes[c] == calen[r+1][2] :
+      dayanddutytype[r, c] = weights[dutytypes[c]]
+      
 #match workers and column
 wmatch = {}
 for i in range(len(workers)):
   wmatch[i] = workers[i]
   wmatch[workers[i]] = i
 
+#match dutytype and index(col)
+dmatch = {}
+for i in range(len(dutytypes)):
+  dmatch[i] = dutytypes[i]
+  dmatch[dutytypes[i]] = i
 
-def markdayoffs(table):
-  for w in dayoffs:
-    for d in dayoffs[w]:
-      table[wmatch[w]][d] = -1
-  return table
-
-# mark dayoff slots to -1
-inittable = markdayoffs(inittable)
 
 #generate weightstate of each column(worker) of table
 def genweightstate(table):
-  weightstate = {}
-
-  for i in range(len(table)):
-    weightstate[i] = 0
-    for j in range(len(table[0])):
-      if table[i][j] == 1:
-        weightstate[i] += weights[calen[j+1][2]]
+  weightstate = np.matmul(table, dayanddutytype)
 
   return weightstate
 
 #return column(worker) of minimum weight sum
-def getmins(weightstate):
+def getmins(weightstate, dutytype):
+  col = dmatch[dutytype]
   result = []
   value = -1
-  for k in weightstate:
+  for r in range(len(weightstate)):
     if value == -1:
-      value = weightstate[k]
-      result.append(k)
+      value = weightstate[r, col]
+      result.append(r)
     else:
-      if value < weightstate[k] : continue
-      elif value > weightstate[k]:
+      if value < weightstate[r, col] : continue
+      elif value > weightstate[r, col]:
         result.clear()
-        result.append(k)
-        value = weightstate[k]
-      else: result.append(k)
+        result.append(r)
+        value = weightstate[r, col]
+      else: result.append(r)
 
   return result
 
 def getlatest(table, row):
-  for col in reversed(range(len(table[row]))):
-    if table[row][col] == 1: return col
+  for col in reversed(range(monthrange)):
+    if table[row,col] == 1: return col
     return -1
-    
+
 
 #allot worker
 def allotworker(table, col):
   weightstate = genweightstate(table)
-  for r in range(len(table)):
-    if table[r][col] == -1:
-      del weightstate[r]
-
-  candidates = getmins(weightstate)
+  candidates = getmins(weightstate, calen[col+1][2])
 
   #more restrictions: pick one worker which the latest work is farthest
   minval = len(table[0])
@@ -236,11 +232,10 @@ def allotworker(table, col):
       finalcandidate.append(candidate)
       minval = test
     else: finalcandidate.append(candidate)
-  
-  table[finalcandidate[0]][col] = 1
+
+  table[finalcandidate[0],col] = 1
 
   return table
-
 
 
 #iterate through columns of table and generate final table
@@ -256,3 +251,26 @@ for c in range(len(workers)):
 
 for g in calen:
   print(g, ':', calen[g][1], calen[g][3])
+
+
+#make schedule log
+def schedulelog(table):
+  log = {}
+  for w in workers:
+    log[w] = {}
+    for d in dutytypes:
+      tmp = {d:0}
+      log[w].update(tmp)
+
+  for r in range(len(table)):
+    for c in range(len(table[r])):
+      if table[r][c] == 1:
+        for d in dutytypes:
+          if calen[c+1][2] == d: log[wmatch[r]][d] += 1
+
+  for w in log:
+    print(w, ':', log[w])
+
+
+schedulelog(table)
+
