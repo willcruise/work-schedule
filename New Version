@@ -230,8 +230,11 @@ def allotworker(table, col):
   weightstate = genweightstate(table)
   #concern dayoffs
   for w in dayoffs[col+1]:
-    np.delete(weightstate, wmatch[w], 0)
+    r = wmatch[w]
+    for c in range(len(weightstate[r])):
+      weightstate[r, c] = 128
 
+  print(weightstate)
 
   #get final candadites to pick
   candidates = getmins(weightstate, calen[col+1][2])
