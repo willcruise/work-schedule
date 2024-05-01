@@ -27,9 +27,6 @@ for i in holidaysinput:
 dutytypes = ['평야', '금야', '토주야', '일주야']
 
 
-# constants: dayofweek, monthrange, holidays, dutytypes
-
-
 # make calendar
 def makecalen(dayofweek, monthrange):
   calen = {}
