@@ -148,9 +148,18 @@ def processdayoff(dayoffs):
         if a not in resultdraft3.keys():
             resultdraft3[a] = []
 
-    return resultdraft3
+    resultdraft4 = {}
+    for date in range(1, monthrange+1):
+      resultdraft4[date] = []
+
+    for w in resultdraft3:
+      for date in resultdraft3[w]:
+        resultdraft4[date].append(w)
+
+    return resultdraft4
 
 dayoffs = processdayoff(dayoffs)
+
 
 ################################################################################
 #weights for each dutytype
@@ -171,12 +180,12 @@ for r in range(monthrange):
   for c in range(len(dutytypes)):
     if dutytypes[c] == calen[r+1][2] :
       dayanddutytype[r, c] = weights[dutytypes[c]]
-      
 #match workers and column
 wmatch = {}
 for i in range(len(workers)):
   wmatch[i] = workers[i]
   wmatch[workers[i]] = i
+
 
 #match dutytype and index(col)
 dmatch = {}
@@ -213,12 +222,18 @@ def getmins(weightstate, dutytype):
 def getlatest(table, row):
   for col in reversed(range(monthrange)):
     if table[row,col] == 1: return col
-    return -1
+  else: return -1
 
 
 #allot worker
 def allotworker(table, col):
   weightstate = genweightstate(table)
+  #concern dayoffs
+  for w in dayoffs[col+1]:
+    np.delete(weightstate, wmatch[w], 0)
+
+
+  #get final candadites to pick
   candidates = getmins(weightstate, calen[col+1][2])
 
   #more restrictions: pick one worker which the latest work is farthest
@@ -264,7 +279,7 @@ def schedulelog(table):
 
   for r in range(len(table)):
     for c in range(len(table[r])):
-      if table[r][c] == 1:
+      if table[r, c] == 1:
         for d in dutytypes:
           if calen[c+1][2] == d: log[wmatch[r]][d] += 1
 
