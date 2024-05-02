@@ -105,29 +105,51 @@ dayoffs = input()
 
 #process the dayoff string to necessary form
 def processdayoff(dayoffs):
-  temp = dayoffs.replace(" ", '')
-
-  resultdraft1 = {}
-  temp = temp.split(':')
-  for e in temp:
-    resultdraft1[e[-1]] = [] 
-
-  for e in range(len(temp)):
-    temp[e] = temp[e][:len(temp[e])-1]
-    
-  for e in temp:
-    if e == '':
-      temp.remove(e)
-
-  print(temp)
-
-  cnt = 0
-  for w in resultdraft1:
-    resultdraft1[w].append(temp[cnt])
-    cnt += 1
+  dayoffs = dayoffs.replace(" ", '')
   
-  print(resultdraft1)
+  workerindex = []
+  for letter in range(len(dayoffs)):
+    for worker in workers:
+      if worker == dayoffs[letter]:
+        workerindex.append(letter)
+
+  workerindex.append(len(dayoffs))
+  
+  draft1 = []
+  for i in range(1, len(workerindex)):
+    draft1.append(dayoffs[workerindex[i-1]:workerindex[i]])
+  
+  for block in range(len(draft1)):
+    draft1[block] = draft1[block].split(':')
+  
+  draft2 = {}
+  for block in draft1:
+    draft2[block[0][0]] = block[1]
     
+  for worker in draft2:
+    draft2[worker] = draft2[worker].split(',')
+    if '' in draft2[worker]: draft2[worker].remove('')
+  
+  
+  draft3 = draft2
+        
+  for worker in draft2:
+    for date in draft2[worker]:
+      if '~' in date:
+        bound = date.split('~')
+        draft3[worker].remove(date)
+        for pdate in range(int(bound[0]), int(bound[1])+1):
+            draft3[worker].append(pdate)
+  
+        
+  print(draft3)
+            
+
+#q:1~10, e:11~16, u:2~5, t:8~20,1,2
+
+
+
+
 
 dayoffs = processdayoff(dayoffs)
 
@@ -202,19 +224,19 @@ def allotworker(table, col):
     r = wmatch[w]
     for c in range(len(weightstate[r])):
       weightstate[r, c] = 128
-  
-  # exclude previous worker row from weightstate if rows are more than one 
+
+  # exclude previous worker row from weightstate if rows are more than one
   if len(weightstate) > 1:
     previousworker = -1
     for r in range(len(table)):
       if table[r, col-1] == 1:
         previousworker = r
         break
-    
+
     for c in range(len(weightstate[previousworker])):
       weightstate[previousworker, c] = 128
-  
-  
+
+
   #get final candadites from weightstate by picking worker who has done minimum work
   candidates = getmins(weightstate, calen[col+1][2])
 
