@@ -114,7 +114,7 @@ def processdayoff(dayoffs):
   for ind in range(len(dayoffs)-2):
     draft[dayoffs[ind][-1]] = dayoffs[ind+1][:-1]
   draft[dayoffs[-2][-1]] = dayoffs[-1]
-
+  
   draft2 = {}
   for vacationer in draft:
     draft2[vacationer] = []
@@ -276,4 +276,4 @@ def schedulelog(table):
 
 schedulelog(table)
 
-#q:1~10, e:2~8,5, r:1,6
+
