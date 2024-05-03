@@ -105,51 +105,39 @@ dayoffs = input()
 
 #process the dayoff string to necessary form
 def processdayoff(dayoffs):
-  dayoffs = dayoffs.replace(" ", '')
-  
-  workerindex = []
-  for letter in range(len(dayoffs)):
-    for worker in workers:
-      if worker == dayoffs[letter]:
-        workerindex.append(letter)
+  dayoffs = dayoffs.replace(' ', '').split(':')
 
-  workerindex.append(len(dayoffs))
+  draft = {}
+  for blockind in range(len(dayoffs)-2):
+    draft[dayoffs[blockind][-1]] = dayoffs[blockind+1][:-1]
   
-  draft1 = []
-  for i in range(1, len(workerindex)):
-    draft1.append(dayoffs[workerindex[i-1]:workerindex[i]])
+  draft[dayoffs[-2][-1]] = dayoffs[-1]
   
-  for block in range(len(draft1)):
-    draft1[block] = draft1[block].split(':')
+  for vacationer in draft:
+    draft[vacationer] = draft[vacationer].split(',')
+    if '' in draft[vacationer]:
+      draft[vacationer].remove('')
   
   draft2 = {}
-  for block in draft1:
-    draft2[block[0][0]] = block[1]
-    
-  for worker in draft2:
-    draft2[worker] = draft2[worker].split(',')
-    if '' in draft2[worker]: draft2[worker].remove('')
+  for vacationer in draft:
+    draft2[vacationer] = []
+    for block in draft[vacationer]:
+      if '~' not in block:
+        draft2[vacationer].append(int(block))
+      else:
+        bound = block.split('~')
+        for date in range(int(bound[0]), int(bound[1])+1):
+          draft2[vacationer].append(date)
   
-  
-  draft3 = draft2
-        
-  for worker in draft2:
-    for date in draft2[worker]:
-      if '~' in date:
-        bound = date.split('~')
-        draft3[worker].remove(date)
-        for pdate in range(int(bound[0]), int(bound[1])+1):
-            draft3[worker].append(pdate)
-  
-        
-  print(draft3)
-            
+  result = {}
+  for date in range(1, monthrange+1):
+    result[date] = []
 
-#q:1~10, e:11~16, u:2~5, t:8~20,1,2
+  for vacationer in draft2:
+    for date in draft2[vacationer]:
+      result[date].append(vacationer)
 
-
-
-
+  return result
 
 dayoffs = processdayoff(dayoffs)
 
@@ -290,6 +278,4 @@ def schedulelog(table):
     print(w, ':', log[w])
 
 schedulelog(table)
-
-#q:1~10, e:11~16, u:2~5, t:8~20,1,2
 
