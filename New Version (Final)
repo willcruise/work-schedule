@@ -106,26 +106,29 @@ dayoffs = input()
 #process the dayoff string to necessary form
 def processdayoff(dayoffs):
   dayoffs = dayoffs.replace(' ', '').split(':')
-
-  for ind in range(len(dayoffs)):
-    dayoffs[ind] = dayoffs[ind].split(',')
-
-  draft = {}
-  for ind in range(len(dayoffs)-2):
-    draft[dayoffs[ind][-1]] = dayoffs[ind+1][:-1]
-  draft[dayoffs[-2][-1]] = dayoffs[-1]
   
-  draft2 = {}
-  for vacationer in draft:
-    draft2[vacationer] = []
-    for block in draft[vacationer]:
-      if '~' not in block:
-        draft2[vacationer].append(int(block))
-      else:
-        bound = block.split('~')
-        for date in range(int(bound[0]), int(bound[1])+1):
-          draft2[vacationer].append(date)
-  
+  if dayoffs != ['']:
+    for ind in range(len(dayoffs)):
+      dayoffs[ind] = dayoffs[ind].split(',')
+
+    draft = {}
+    for ind in range(len(dayoffs)-2):
+      draft[dayoffs[ind][-1]] = dayoffs[ind+1][:-1]
+    draft[dayoffs[-2][-1]] = dayoffs[-1]
+
+    draft2 = {}
+    for vacationer in draft:
+      draft2[vacationer] = []
+      for block in draft[vacationer]:
+        if '~' not in block:
+          draft2[vacationer].append(int(block))
+        else:
+          bound = block.split('~')
+          for date in range(int(bound[0]), int(bound[1])+1):
+            draft2[vacationer].append(date)
+
+  else: draft2 = {}
+
   result = {}
   for date in range(1, monthrange+1):
     result[date] = []
