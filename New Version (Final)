@@ -206,15 +206,19 @@ def allotworker(table, col):
   #get weightstate of table; weightstate is a indicater for
   #checking the amount of work done to date by each worker
   weightstate = genweightstate(table)
-
+  
+  #rows(workers) that are not excluded by dayoffs 
+  availablerows = len(weightstate)
+  
   #concern dayoffs : set data value of the dayoff worker(row) to 128(large)
   for w in dayoffs[col+1]:
     r = wmatch[w]
     for c in range(len(weightstate[r])):
       weightstate[r, c] = 128
+      availablerows -= 1
 
   # exclude previous worker row from weightstate if rows are more than one
-  if len(weightstate) > 1:
+  if availablerows > 1:
     previousworker = -1
     for r in range(len(table)):
       if table[r, col-1] == 1:
